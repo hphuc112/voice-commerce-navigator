@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products - Voice-Activated E-Commerce</title>
+    <link rel="stylesheet" href="css/products.css" />
+  </head>
+  <body>
+    <!-- Fixed Header -->
+    <header class="fixed-header">
+      <div class="header-left">
+        <img src="assets/images/logo.png" alt="Logo" class="logo" />
+      </div>
+      <div class="header-center">
+        <input
+          type="text"
+          class="search-bar"
+          placeholder="Search products..."
+        />
+      </div>
+      <div class="header-right">
+        <button class="returns-orders" onclick="location.href='returns.html'">
+          Returns &amp; Orders
+        </button>
+        <button class="cart-button" onclick="location.href='cart.html'">
+          Cart (<span id="cartCount">0</span>)
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content: Product Listings -->
+    <main class="product-main">
+      <h2>Our Products</h2>
+      <!-- Product List Container -->
+      <div class="product-list" id="productList"></div>
+    </main>
+
+    <script src="js/products.js"></script>
+  </body>
+</html>
