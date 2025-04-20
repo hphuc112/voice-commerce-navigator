@@ -1,16 +1,131 @@
-// Grab the <span id="cartCount">
-const countEl = document.getElementById("cartCount");
+// js/cart.js
 
-// Load the cart count from localStorage (default to 0)
-let cartCount = parseInt(localStorage.getItem("cartCount")) || 0;
+const STORAGE_KEY = "cartItems";
 
-// Display it
-countEl.textContent = cartCount;
+// Utility to read/write cart
+function getCartItems() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+function setCartItems(items) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
 
-// (Optional) If you plan to allow modifying the cart on this page,
-// you can expose a function to update:
-// function updateCart(newCount) {
-//   cartCount = newCount;
-//   localStorage.setItem("cartCount", cartCount);
-//   countEl.textContent = cartCount;
-// }
+// DOM containers
+const itemsContainer = document.querySelector(".cart-items");
+const summaryContainer = document.querySelector(".cart-summary");
+
+// Main render function
+function renderCart() {
+  const cartItems = getCartItems();
+  itemsContainer.innerHTML = "";
+  summaryContainer.innerHTML = "";
+
+  if (cartItems.length === 0) {
+    itemsContainer.innerHTML = `<p class="empty">Your cart is empty.</p>`;
+    summaryContainer.innerHTML = `<p class="empty">Add items to your cart to see summary.</p>`;
+    // Sync cartCount = 0
+    updateCartCountInStorage(0);
+    return;
+  }
+
+  // ——— Render each cart item ———
+  cartItems.forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "cart-item";
+
+    // Image
+    const img = new Image();
+    img.className = "cart-item-img";
+    img.src = `assets/products/${item.image}`;
+    img.alt = item.name;
+
+    // Details
+    const details = document.createElement("div");
+    details.className = "cart-item-details";
+    details.innerHTML = `
+      <div class="cart-item-name">${item.name}</div>
+      <div class="cart-item-price">$${(item.price * item.quantity).toFixed(
+        2
+      )}</div>
+    `;
+
+    // Actions: decrease, qty display, increase, delete
+    const actions = document.createElement("div");
+    actions.className = "cart-item-actions";
+
+    const btnDec = document.createElement("button");
+    btnDec.className = "qty-btn decrease";
+    btnDec.textContent = "−";
+    btnDec.addEventListener("click", () => changeQuantity(item.id, -1));
+
+    const qtySpan = document.createElement("span");
+    qtySpan.className = "item-qty";
+    qtySpan.textContent = item.quantity;
+
+    const btnInc = document.createElement("button");
+    btnInc.className = "qty-btn increase";
+    btnInc.textContent = "+";
+    btnInc.addEventListener("click", () => changeQuantity(item.id, +1));
+
+    const btnDel = document.createElement("button");
+    btnDel.className = "delete-btn";
+    btnDel.textContent = "Delete";
+    btnDel.addEventListener("click", () => removeItem(item.id));
+
+    actions.append(btnDec, qtySpan, btnInc, btnDel);
+
+    row.append(img, details, actions);
+    itemsContainer.appendChild(row);
+  });
+
+  // ——— Render summary ———
+  const totalQty = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+  const totalPrice = cartItems
+    .reduce((sum, i) => sum + i.price * i.quantity, 0)
+    .toFixed(2);
+
+  summaryContainer.innerHTML = `
+    <h3>Order Summary</h3>
+    <div>Total Items: <strong>${totalQty}</strong></div>
+    <div class="total">Total Price: $${totalPrice}</div>
+    <button class="clear-cart-btn">Clear Cart</button>
+    <button class="proceed-button">Proceed to Checkout</button>
+  `;
+
+  // Hook up clear cart button
+  summaryContainer
+    .querySelector(".clear-cart-btn")
+    .addEventListener("click", clearCart);
+}
+
+// Increase or decrease quantity (delta = ±1)
+function changeQuantity(productId, delta) {
+  const items = getCartItems();
+  const idx = items.findIndex((i) => i.id === productId);
+  if (idx === -1) return;
+
+  items[idx].quantity += delta;
+  if (items[idx].quantity < 1) {
+    // Remove if goes below 1
+    items.splice(idx, 1);
+  }
+  setCartItems(items);
+  renderCart();
+}
+
+// Remove an item entirely
+function removeItem(productId) {
+  let items = getCartItems();
+  items = items.filter((i) => i.id !== productId);
+  setCartItems(items);
+  renderCart();
+}
+
+// Clear the whole cart
+function clearCart() {
+  localStorage.removeItem(STORAGE_KEY);
+  renderCart();
+}
+
+// Initial render
+document.addEventListener("DOMContentLoaded", renderCart);

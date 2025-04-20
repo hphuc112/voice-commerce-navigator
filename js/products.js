@@ -1,6 +1,7 @@
 // === Cart Count Logic ===
 const cartCountElement = document.getElementById("cartCount");
-let cartCount = parseInt(localStorage.getItem("cartCount")) || 0;
+// Read initial count (default 0)
+let cartCount = parseInt(localStorage.getItem("cartCount"), 10) || 0;
 updateCartCount(cartCount);
 
 function updateCartCount(count) {
@@ -9,11 +10,39 @@ function updateCartCount(count) {
   cartCountElement.textContent = cartCount;
 }
 
-// Called when "Add to Cart" clicked
+// Listen for external changes to cartCount (from other pages/tabs)
+window.addEventListener("storage", (e) => {
+  if (e.key === "cartCount") {
+    updateCartCount(parseInt(e.newValue, 10) || 0);
+  }
+});
+
+// === Manage cartItems in localStorage ===
 function addToCart(productId, quantity, event) {
-  // event.currentTarget is the clicked button
+  // 1. Update the cart count
   updateCartCount(cartCount + quantity);
-  // e.g. show toast/alert here if desired
+
+  // 2. Read existing cartItems or start fresh
+  const storageKey = "cartItems";
+  const existing = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+  // 3. Gather product data
+  const image = productImages[productId];
+  const card = event.currentTarget.closest(".product-item");
+  const name = card.querySelector(".product-name").textContent;
+  const priceText = card.querySelector(".product-price").textContent;
+  const price = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0;
+
+  // 4. Add or update the item in cartItems
+  const idx = existing.findIndex((item) => item.id === productId);
+  if (idx > -1) {
+    existing[idx].quantity += quantity;
+  } else {
+    existing.push({ id: productId, name, image, price, quantity });
+  }
+
+  // 5. Save back to localStorage
+  localStorage.setItem(storageKey, JSON.stringify(existing));
 }
 
 // === Product Grid Generation ===
@@ -79,10 +108,10 @@ productImages.forEach((filename, idx) => {
   img.className = "product-img";
   img.src = `assets/products/${filename}`;
   img.alt = filename
-    .replace(/[-.]\w+$/, "") // strip extension
+    .replace(/[-.]\w+$/, "")
     .split("-")
-    .join(" ") // hyphens → spaces
-    .replace(/\b\w/g, (c) => c.toUpperCase()); // Title Case
+    .join(" ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 
   imgWrapper.appendChild(img);
   card.appendChild(imgWrapper);
@@ -95,7 +124,7 @@ productImages.forEach((filename, idx) => {
 
   const priceEl = document.createElement("p");
   priceEl.className = "product-price";
-  priceEl.textContent = "$0.00"; // replace with real price
+  priceEl.textContent = "$20"; // replace with real price
   card.appendChild(priceEl);
 
   // 4) Controls wrapper
