@@ -1,0 +1,111 @@
+/* === Reset & Base === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Inter", sans-serif;
+  font-weight: 400; /* regular */
+  background-color: #f9f9f9;
+  color: #333;
+  padding-top: 70px; /* leave space for the fixed header */
+}
+
+/* === Header === */
+.cart-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: #222;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  background-color: #ff6b6b;
+}
+.cart-header .home-link,
+.cart-header h1 {
+  color: #fff;
+}
+.cart-header .header-left,
+.cart-header .header-center,
+.cart-header .header-right {
+  flex: 1;
+}
+.cart-header .header-left {
+  text-align: left;
+}
+.cart-header .header-center {
+  text-align: center;
+}
+.cart-header .header-right {
+  text-align: right;
+}
+.home-link {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+.cart-header h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* === Main Cart Section === */
+.cart-main {
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: #ededed;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.cart-main h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+.cart-summary {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+.cart-summary span {
+  color: #ffd93d; /* yellow */
+  font-weight: bold;
+}
+.proceed-button {
+  background-color: #4ecdc4; /* teal */
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.proceed-button:hover {
+  background-color: #3bae9f; /* slightly darker teal */
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cart-header .home-link {
+    font-size: 1.25rem;
+  }
+  .cart-header h1 {
+    font-size: 1rem;
+  }
+  .cart-main {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  .cart-main h2 {
+    font-size: 1.5rem;
+  }
+}

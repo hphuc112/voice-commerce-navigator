@@ -6,7 +6,8 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Inter", sans-serif;
+  font-weight: 400; /* regular */
   background: #f4f4f4;
   color: #333;
   line-height: 1.6;
@@ -17,13 +18,19 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ff2c4f;
+  background-color: #4ecdc4;
   color: #fff;
   padding: 1rem;
 }
 
+.header-left .logo {
+  height: 70px;
+  border-radius: 10px;
+}
 .header-left {
-  /* Position button at the top-left */
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
 }
 
 #toggleVoiceBtn {
@@ -78,4 +85,9 @@ footer {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+.header-right {
+  font-size: 1.25rem;
+  font-weight: 500;
 }

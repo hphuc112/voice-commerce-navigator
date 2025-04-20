@@ -107,7 +107,7 @@ productImages.forEach((filename, idx) => {
   [1, 2, 3, 4, 5].forEach((n) => {
     const opt = document.createElement("option");
     opt.value = n;
-    opt.textContent = `Qty: ${n}`;
+    opt.textContent = `${n}`;
     select.appendChild(opt);
   });
   controls.appendChild(select);
