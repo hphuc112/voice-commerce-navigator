@@ -1,3 +1,5 @@
+@import url("variables.css");
+
 /* Reset & Base */
 *,
 *::before,
@@ -25,7 +27,7 @@ h2 {
   left: 0;
   width: 100%;
   height: 70px;
-  background-color: #ff6b6b; /* coral */
+  background: var(--dark-gray);
   color: #fff;
   display: flex;
   align-items: center;
@@ -67,7 +69,7 @@ h2 {
 /* Left: items list */
 .cart-items {
   flex: 2;
-  background-color: #ededed; /* gray card */
+  background: var(--white);
   padding: 1rem;
   border-radius: 8px;
   overflow-y: auto;
@@ -109,7 +111,7 @@ h2 {
 }
 .cart-item-price {
   font-weight: bold;
-  color: #ffd93d; /* yellow */
+  color: var(--black);
 }
 
 /* Right: summary box */
@@ -132,11 +134,13 @@ h2 {
   font-weight: bold;
   color: #ff6b6b; /* coral */
 }
+
+/* ======== Buttons ======== */
 .proceed-button {
   margin-top: auto;
   padding: 0.75rem;
-  background-color: #4ecdc4; /* teal */
-  color: #fff;
+  background: var(--black);
+  color: var(--yellow);
   border: none;
   border-radius: 25px;
   font-family: "Poppins", sans-serif;
@@ -145,7 +149,7 @@ h2 {
   transition: background-color 0.2s;
 }
 .proceed-button:hover {
-  background-color: #3bae9f;
+  background: var(--dark-gray);
 }
 
 /* Container for item‑level actions */
@@ -158,8 +162,8 @@ h2 {
 
 /* Qty buttons */
 .qty-btn {
-  background-color: #4ecdc4; /* teal */
-  color: #fff;
+  background: var(--yellow);
+  color: var(--black);
   border: none;
   border-radius: 4px;
   width: 28px;
@@ -168,13 +172,13 @@ h2 {
   cursor: pointer;
 }
 .qty-btn.decrease {
-  background: #ff6b6b;
+  background: var(--medium-gray);
 } /* coral for “−” */
 
 /* Delete button */
 .delete-btn {
-  background-color: #ff6b6b; /* coral */
-  color: #fff;
+  background: var(--black);
+  color: var(--yellow);
   border: none;
   border-radius: 4px;
   padding: 4px 8px;
@@ -183,8 +187,8 @@ h2 {
 
 /* Clear Cart button */
 .clear-cart-btn {
-  background-color: #ff6b6b; /* coral */
-  color: #fff;
+  background: var(--black);
+  color: var(--yellow);
   border: none;
   padding: 0.75rem;
   border-radius: 25px;

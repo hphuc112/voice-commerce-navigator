@@ -1,267 +1,243 @@
-// Select the container for displaying recognized text and the toggle button
-// const texts = document.querySelector(".texts");
-// const toggleVoiceBtn = document.getElementById("toggleVoiceBtn");
+// Debug check
+console.log("Voice control script loaded"); // Confirm script load
 
-// // Check for browser compatibility
-// window.SpeechRecognition =
-//   window.SpeechRecognition || window.webkitSpeechRecognition;
+// 1. UI references
+const texts = document.querySelector(".texts"); // Transcript output container :contentReference[oaicite:5]{index=5}
+const toggleVoiceBtn = document.getElementById("toggleVoiceBtn"); // Start/stop button
 
-// if (!window.SpeechRecognition) {
-//   texts.innerHTML = "<p>Your browser does not support Speech Recognition.</p>";
-//   toggleVoiceBtn.disabled = true;
-// } else {
-//   const recognition = new SpeechRecognition();
-//   recognition.interimResults = true;
-//   recognition.continuous = true; // Continue listening until explicitly stopped
-
-//   let isListening = false; // Track whether recognition is on
-//   let p = document.createElement("p");
-
-//   // Function to start voice recognition
-//   function startRecognition() {
-//     recognition.start();
-//     toggleVoiceBtn.textContent = "Turn Off Voice";
-//     isListening = true;
-//   }
-
-//   // Function to stop voice recognition
-//   function stopRecognition() {
-//     recognition.stop();
-//     toggleVoiceBtn.textContent = "Turn On Voice";
-//     isListening = false;
-//   }
-
-//   // Toggle button event listener
-//   toggleVoiceBtn.addEventListener("click", () => {
-//     if (isListening) {
-//       stopRecognition();
-//     } else {
-//       startRecognition();
-//     }
-//   });
-
-//   // Handle recognition results
-//   recognition.addEventListener("result", (e) => {
-//     // Append current paragraph to the texts container
-//     texts.appendChild(p);
-//     // Convert speech results to a single string
-//     const text = Array.from(e.results)
-//       .map((result) => result[0])
-//       .map((result) => result.transcript)
-//       .join("");
-//     p.innerText = text;
-
-//     if (e.results[0].isFinal) {
-//       // Process a basic command: open item detail page
-//       if (text.toLowerCase().includes("open item detail")) {
-//         p = document.createElement("p");
-//         p.classList.add("replay");
-//         p.innerText = "Opening item detail page...";
-//         texts.appendChild(p);
-//         // Replace with actual navigation logic, for example:
-//         // window.location.href = "products.html"; // Or specific item detail page
-//         console.log("Navigating to item detail page");
-//       }
-//       // Process cart-related voice commands
-//       processCartVoiceCommand(text);
-//       // Prepare a new paragraph for the next result
-//       p = document.createElement("p");
-//     }
-//   });
-
-//   // Restart recognition on end (if still supposed to be listening)
-//   recognition.addEventListener("end", () => {
-//     if (isListening) recognition.start();
-//   });
-
-//   // Example function to process cart-related commands
-//   function processCartVoiceCommand(text) {
-//     text = text.toLowerCase();
-//     if (text.includes("add to cart")) {
-//       const p = document.createElement("p");
-//       p.classList.add("replay");
-//       p.innerText = "Adding item to cart...";
-//       texts.appendChild(p);
-//       console.log("Item added to cart");
-//     }
-//     // Extend this function to include other commands (e.g., "view cart", "remove from cart", etc.)
-//   }
-// }
-
-//---------------------------------------------------------
-// Set up SpeechRecognition
-// window.SpeechRecognition =
-//   window.SpeechRecognition || window.webkitSpeechRecognition;
-// if (!window.SpeechRecognition) {
-//   texts.innerHTML = "<p>Your browser does not support Speech Recognition.</p>";
-// } else {
-//   const recognition = new SpeechRecognition();
-//   recognition.interimResults = true;
-//   recognition.continuous = true; // Continuously listen
-
-//   let p = document.createElement("p");
-//   let lastCommand = ""; // Holds the last processed final command
-//   let commandDebounceTimer; // Timer to reset the last processed command
-
-//   recognition.addEventListener("result", (e) => {
-//     texts.appendChild(p);
-//     // Concatenate all parts of the result into one string
-//     const transcript = Array.from(e.results)
-//       .map((result) => result[0])
-//       .map((result) => result.transcript)
-//       .join("")
-//       .trim();
-
-//     // Update the text paragraph for feedback
-//     p.innerText = transcript;
-
-//     // When the user stops speaking in this segment...
-//     if (e.results[e.results.length - 1].isFinal) {
-//       // Only process if this final transcript is different from the last processed command
-//       if (transcript !== lastCommand) {
-//         lastCommand = transcript;
-//         // Process basic commands
-//         if (transcript.toLowerCase().includes("open item detail")) {
-//           let replayP = document.createElement("p");
-//           replayP.classList.add("replay");
-//           replayP.innerText = "Opening item detail page...";
-//           texts.appendChild(replayP);
-//           // Replace window.open with actual navigation logic as needed:
-//           console.log("Navigating to item detail page");
-//         }
-//         // Process cart-related voice commands
-//         processCartVoiceCommand(transcript);
-
-//         // Set up a debounce timer to reset the lastCommand value
-//         clearTimeout(commandDebounceTimer);
-//         commandDebounceTimer = setTimeout(() => {
-//           lastCommand = "";
-//         }, 1000); // Reset after 1 second (adjust as needed)
-//       }
-//       // Prepare a new paragraph for the next result
-//       p = document.createElement("p");
-//     }
-//   });
-
-//   recognition.addEventListener("end", () => {
-//     // Restart voice recognition if still intended to be active
-//     recognition.start();
-//   });
-
-//   recognition.start();
-
-//   // Example function for processing cart-related commands
-//   function processCartVoiceCommand(text) {
-//     text = text.toLowerCase();
-//     if (text.includes("add to cart")) {
-//       let replayP = document.createElement("p");
-//       replayP.classList.add("replay");
-//       replayP.innerText = "Adding item to cart...";
-//       texts.appendChild(replayP);
-//       console.log("Item added to cart");
-//     }
-//     // Add more command conditions here as needed.
-//   }
-// }
-
-// Select the container for displaying recognized text and the toggle button
-const texts = document.querySelector(".texts");
-const toggleVoiceBtn = document.getElementById("toggleVoiceBtn");
-
-// Set up Speech Recognition API
+// 2. Initialize Web Speech API
 window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 if (!window.SpeechRecognition) {
   texts.innerHTML = "<p>Your browser does not support Speech Recognition.</p>";
-  toggleVoiceBtn.disabled = true;
+  toggleVoiceBtn.disabled = true; // Disable toggle if unsupported :contentReference[oaicite:6]{index=6}
 } else {
-  const recognition = new SpeechRecognition();
-  recognition.interimResults = true;
-  recognition.continuous = true; // We'll restart recognition automatically only when enabled
+  const recognition = new SpeechRecognition(); // Create recognizer :contentReference[oaicite:7]{index=7}
+  recognition.interimResults = true; // Allow interim results :contentReference[oaicite:8]{index=8}
+  recognition.continuous = true; // Keep listening until stopped :contentReference[oaicite:9]{index=9}
 
-  let isListening = false; // Track whether voice recognition is currently on
-  let p = document.createElement("p");
-  let lastCommand = ""; // For debouncing repeated commands
-  let commandDebounceTimer;
+  let isListening = false; // Mic state
+  let lastCommand = ""; // Debounce storage
+  let debounceTimer; // Debounce timeout ID
 
-  // Function to start voice recognition
+  // 3. Start/Stop functions
   function startRecognition() {
-    recognition.start();
+    recognition.start(); // Begin listening :contentReference[oaicite:10]{index=10}
     isListening = true;
     toggleVoiceBtn.textContent = "Turn Off Voice";
+    console.log("Recognition started");
   }
-
-  // Function to stop voice recognition
   function stopRecognition() {
-    recognition.stop();
+    recognition.stop(); // Cease listening :contentReference[oaicite:11]{index=11}
     isListening = false;
     toggleVoiceBtn.textContent = "Turn On Voice";
+    console.log("Recognition stopped");
   }
 
-  // Toggle the voice recognition when the button is clicked
   toggleVoiceBtn.addEventListener("click", () => {
-    if (isListening) {
-      stopRecognition();
-    } else {
-      startRecognition();
-    }
+    // Wire up toggle :contentReference[oaicite:12]{index=12}
+    isListening ? stopRecognition() : startRecognition();
   });
 
-  // Process speech results
+  // 4. Handle recognition results
+  // recognition.addEventListener("result", (e) => {
+  //   const transcript = Array.from(e.results)
+  //     .map((r) => r[0].transcript)
+  //     .join("")
+  //     .trim(); // Build full transcript :contentReference[oaicite:13]{index=13}
+
+  //   texts.innerHTML = ""; // Clear previous text
+  //   const p = document.createElement("p");
+  //   p.textContent = transcript;
+  //   texts.appendChild(p); // Display current transcript :contentReference[oaicite:14]{index=14}
+
+  //   // Act only on final results and new commands
+  //   if (e.results[e.results.length - 1].isFinal && transcript !== lastCommand) {
+  //     lastCommand = transcript;
+  //     console.log("Final command:", transcript);
+
+  //     const cmd = transcript.toLowerCase();
+
+  //     // 5. Navigation: “show products”
+  //     if (isProductCommand(cmd)) {
+  //       stopRecognition();
+  //       const reply = document.createElement("p");
+  //       reply.className = "replay";
+  //       reply.textContent = "Opening products page...";
+  //       texts.appendChild(reply);
+  //       console.log("Navigating to products.html");
+  //       window.location.href = "products.html";
+  //     }
+
+  //     // Debounce reset after 1s
+  //     clearTimeout(debounceTimer);
+  //     debounceTimer = setTimeout(() => {
+  //       lastCommand = "";
+  //     }, 1000); // Prevent immediate repeats :contentReference[oaicite:17]{index=17}
+  //   }
+  // });
   recognition.addEventListener("result", (e) => {
-    texts.appendChild(p);
     const transcript = Array.from(e.results)
-      .map((result) => result[0])
-      .map((result) => result.transcript)
+      .map((r) => r[0].transcript)
       .join("")
       .trim();
-    p.innerText = transcript;
 
-    // When a final result is received, process commands if not already processed
-    if (e.results[e.results.length - 1].isFinal) {
-      if (transcript !== lastCommand) {
-        lastCommand = transcript;
-        // Process command to open item detail page
-        if (transcript.toLowerCase().includes("open item detail")) {
-          let replyP = document.createElement("p");
-          replyP.classList.add("replay");
-          replyP.innerText = "Opening item detail page...";
-          texts.appendChild(replyP);
-          console.log("Navigating to item detail page");
-          // Replace the following with actual navigation logic:
-          // window.location.href = "products.html"; // for example
+    texts.innerHTML = "";
+    const p = document.createElement("p");
+    p.textContent = transcript;
+    texts.appendChild(p);
+
+    if (e.results[e.results.length - 1].isFinal && transcript !== lastCommand) {
+      lastCommand = transcript;
+      console.log("Final command:", transcript);
+
+      // Process all navigation commands
+      if (!isNavigationCommand(transcript.toLowerCase())) {
+        // Process other non-navigation commands here
+        if (transcript.toLowerCase().includes("add to cart")) {
+          processCartVoiceCommand(transcript);
         }
-        // Process cart-related commands, such as "add to cart"
-        processCartVoiceCommand(transcript);
-
-        // Set up a debounce to reset the command after one second
-        clearTimeout(commandDebounceTimer);
-        commandDebounceTimer = setTimeout(() => {
-          lastCommand = "";
-        }, 1000);
       }
-      // Prepare a new paragraph for the next result
-      p = document.createElement("p");
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        lastCommand = "";
+      }, 1000);
     }
   });
+  function isProductCommand(text) {
+    const productTriggers = [
+      // Exact matches
+      "show products",
+      "open products",
+      "products",
+      "product page",
 
-  // Restart recognition only if the microphone is enabled
-  recognition.addEventListener("end", () => {
-    if (isListening) {
-      recognition.start();
-    }
-  });
+      // New natural language variations
+      "go to products",
+      "view products",
+      "see products",
+      "browse products",
+      "show me products",
+      "take me to products",
+      "where are products",
+      "product list",
+      "items list",
+      "view items",
+      "show items",
+      "what do you sell",
+      "show catalog",
+      "view catalog",
+    ];
 
-  // Example function to process cart-related commands
-  function processCartVoiceCommand(text) {
-    text = text.toLowerCase();
-    if (text.includes("add to cart")) {
-      let replyP = document.createElement("p");
-      replyP.classList.add("replay");
-      replyP.innerText = "Adding item to cart...";
-      texts.appendChild(replyP);
-      console.log("Item added to cart");
-    }
-    // Extend this function to handle more cart commands, like "remove from cart" or "view cart"
+    // Check both exact and partial matches
+    return productTriggers.some(
+      (trigger) =>
+        text === trigger || // Exact match
+        text.includes(trigger) || // Partial match
+        trigger.includes(text) // Even if user says just "products"
+    );
   }
+  function isNavigationCommand(text) {
+    return isProductCommand(text) || isCartCommand(text) || isHomeCommand(text);
+  }
+
+  function isProductCommand(text) {
+    const triggers = [
+      // Exact matches
+      "show products",
+      "open products",
+      "products",
+      "product page",
+      // Natural variations
+      "go to products",
+      "view products",
+      "see products",
+      "browse products",
+      "show me products",
+      "take me to products",
+      "where are products",
+      "product list",
+      "items list",
+      "view items",
+      "show items",
+      "what do you sell",
+      "show catalog",
+      "view catalog",
+    ];
+    return checkCommand(text, triggers, "products.html");
+  }
+
+  function isCartCommand(text) {
+    const triggers = [
+      // Exact matches
+      "cart",
+      "my cart",
+      "view cart",
+      "open cart",
+      "shopping cart",
+      // Natural variations
+      "go to cart",
+      "show cart",
+      "see my cart",
+      "browse cart",
+      "where is my cart",
+      "shopping bag",
+      "view my items",
+      "what's in my cart",
+      "checkout",
+      "review cart",
+    ];
+    return checkCommand(text, triggers, "cart.html");
+  }
+
+  function isHomeCommand(text) {
+    const triggers = [
+      // Exact matches
+      "home",
+      "main page",
+      "go home",
+      "index",
+      // Natural variations
+      "return home",
+      "back to home",
+      "start over",
+      "main menu",
+      "home screen",
+      "homepage",
+      "go to main",
+      "take me home",
+    ];
+    return checkCommand(text, triggers, "index.html");
+  }
+
+  function checkCommand(text, triggers, targetUrl) {
+    const match = triggers.some(
+      (trigger) =>
+        text === trigger || text.includes(trigger) || trigger.includes(text)
+    );
+
+    if (match) {
+      stopRecognition();
+      const reply = document.createElement("p");
+      reply.className = "replay";
+      reply.textContent = `Navigating to ${targetUrl.replace(
+        ".html",
+        ""
+      )} page...`;
+      texts.appendChild(reply);
+      console.log(`Navigating to ${targetUrl}`);
+      window.location.href = targetUrl;
+      return true;
+    }
+    return false;
+  }
+
+  // 6. Auto-restart recognition if still listening
+  recognition.addEventListener("end", () => {
+    if (isListening) recognition.start(); // Resume on end :contentReference[oaicite:18]{index=18}
+  });
+
+  // Optional: auto-start on page load
+  // startRecognition();
 }

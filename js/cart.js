@@ -24,7 +24,8 @@ function renderCart() {
     itemsContainer.innerHTML = `<p class="empty">Your cart is empty.</p>`;
     summaryContainer.innerHTML = `<p class="empty">Add items to your cart to see summary.</p>`;
     // Sync cartCount = 0
-    updateCartCountInStorage(0);
+    // updateCartCountInStorage(0);
+    localStorage.setItem("cartCount", 0);
     return;
   }
 
@@ -110,6 +111,7 @@ function changeQuantity(productId, delta) {
     items.splice(idx, 1);
   }
   setCartItems(items);
+  updateCartCount();
   renderCart();
 }
 
@@ -118,14 +120,22 @@ function removeItem(productId) {
   let items = getCartItems();
   items = items.filter((i) => i.id !== productId);
   setCartItems(items);
+  updateCartCount();
   renderCart();
 }
 
 // Clear the whole cart
 function clearCart() {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.setItem("cartCount", 0);
   renderCart();
 }
 
 // Initial render
 document.addEventListener("DOMContentLoaded", renderCart);
+
+function updateCartCount() {
+  const cartItems = getCartItems();
+  const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  localStorage.setItem("cartCount", totalQty);
+}

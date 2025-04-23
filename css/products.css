@@ -1,3 +1,5 @@
+@import url("variables.css");
+
 /* === Global Reset === */
 *,
 *::before,
@@ -24,8 +26,8 @@ body {
   left: 0;
   width: 100%;
   height: 80px;
-  background: #ff2c4f;
-  background-color: #4ecdc4;
+  background: var(--dark-gray);
+  /* background-color: #4ecdc4; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,11 +47,12 @@ body {
   justify-content: center;
 }
 .header-center .search-bar {
+  background: var(--white);
+  border: 2px solid var(--yellow);
   width: 60%;
   max-width: 500px;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: none;
   border-radius: 25px;
 }
 .header-right {
@@ -57,9 +60,9 @@ body {
   gap: 1rem;
 }
 .header-right button {
-  background: #fff;
-  color: #ff6b6b; /* coral text */
-  border: 2px solid #ff6b6b;
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
   padding: 0.6rem 1.2rem;
   border-radius: 25px;
   font-weight: bold;
@@ -96,7 +99,8 @@ body {
   padding: 1rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-  background-color: white;
+  background: var(--white);
+  border: 1px solid var(--light-gray);
 }
 .product-item:hover {
   transform: translateY(-4px);
@@ -142,12 +146,14 @@ body {
 /*  Price styling */
 .product-price {
   text-align: center;
-  color: white;
+  background: var(--black);
+  color: var(--yellow);
+
   font-size: 1rem;
   margin-bottom: 0.75rem;
   font-weight: bold;
   font-size: 20px;
-  background-color: #4ecdc4;
+
   border-radius: 20px;
 }
 
@@ -163,7 +169,7 @@ body {
 /*  Quantity select */
 .quantity-select {
   padding: 0.4rem;
-  border: 2px solid #4ecdc4;
+  border: 2px solid var(--black);
   border-radius: 4px;
   font-size: 0.95rem;
 }
@@ -171,8 +177,8 @@ body {
 /*  Add-to-cart button */
 .add-to-cart {
   padding: 0.6rem 1rem;
-  background-color: #ff6b6b; /* coral */
-  color: #fff;
+  background: var(--black);
+  color: var(--yellow);
   border: none;
   border-radius: 25px;
   cursor: pointer;
@@ -180,7 +186,7 @@ body {
   transition: background 0.2s;
 }
 .add-to-cart:hover {
-  background: #e0263c;
+  background: var(--dark-gray);
 }
 
 /* === Responsive Adjustments === */

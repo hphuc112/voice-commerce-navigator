@@ -152,3 +152,58 @@ productImages.forEach((filename, idx) => {
   // 5) Append card to grid
   productList.appendChild(card);
 });
+
+// ------ Simple search -------
+// // 1. Grab the search field
+// const searchInput = document.getElementById("searchInput");
+
+// // 2. Listen for user input
+// searchInput.addEventListener("input", () => {
+//   const term = searchInput.value.toLowerCase(); // normalize case :contentReference[oaicite:0]{index=0}
+
+//   // 3. For each product card, check name and toggle visibility
+//   document.querySelectorAll(".product-item").forEach((card) => {
+//     const name = card.querySelector(".product-name").textContent.toLowerCase();
+//     card.style.display = name.includes(term) ? "" : "none"; // show/hide :contentReference[oaicite:1]{index=1}
+//   });
+// });
+
+// -------- Search with exactly word -----------
+// 1. Helper to escape regex metacharacters in the search term
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // escape special chars :contentReference[oaicite:6]{index=6}
+}
+
+// 2. Grab the search input (ensure it has id="searchInput")
+const searchInput = document.getElementById("searchInput");
+
+// 3. Listen for input events
+searchInput.addEventListener("input", () => {
+  const term = searchInput.value.trim().toLowerCase();
+  if (!term) {
+    // If empty, show all products
+    document.querySelectorAll(".product-item").forEach((card) => {
+      card.style.display = "";
+    });
+    return;
+  }
+
+  // 4. Create a word-boundary regex: \bterm\b
+  const escapedTerm = escapeRegex(term);
+  const regex = new RegExp(`\\b${escapedTerm}\\b`, "i"); // i = case-insensitive :contentReference[oaicite:7]{index=7}
+
+  // 5. Filter products
+  document.querySelectorAll(".product-item").forEach((card) => {
+    const name = card.querySelector(".product-name").textContent;
+    // Show only if name tests true
+    card.style.display = regex.test(name) ? "" : "none";
+  });
+});
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "cartItems" || e.key === "cartCount") {
+    const items = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const newCount = items.reduce((sum, item) => sum + item.quantity, 0);
+    updateCartCount(newCount);
+  }
+});
