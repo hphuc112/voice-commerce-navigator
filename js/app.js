@@ -141,7 +141,6 @@ if (!window.SpeechRecognition) {
   function isNavigationCommand(text) {
     return isProductCommand(text) || isCartCommand(text) || isHomeCommand(text);
   }
-
   function isProductCommand(text) {
     const triggers = [
       // Exact matches

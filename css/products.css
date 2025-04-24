@@ -188,6 +188,40 @@ body {
 .add-to-cart:hover {
   background: var(--dark-gray);
 }
+/* === Voice Toggle Button === */
+.voice-toggle {
+  position: fixed;
+  top: 90px; /* header height (80px) + 10px gap */
+  left: 1.5rem; /* match header padding */
+  background: var(--yellow);
+  color: var(--black);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  z-index: 1000;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+/* Feedback area styling */
+.texts {
+  position: fixed;
+  top: 130px; /* below the toggle */
+  left: 1.5rem;
+  max-width: 300px;
+  font-size: 0.9rem;
+  color: #333;
+  z-index: 1000;
+
+  background: var(--white);
+  border: 2px solid var(--yellow);
+  padding: 1rem;
+  border-radius: 5px;
+  min-height: 150px;
+}
 
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {

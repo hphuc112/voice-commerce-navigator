@@ -37,7 +37,7 @@ function renderCart() {
     // Image
     const img = new Image();
     img.className = "cart-item-img";
-    img.src = `assets/products/${item.image}`;
+    img.src = item.image; // JSON already holds "assets/products/…"
     img.alt = item.name;
 
     // Details

@@ -1,3 +1,155 @@
+// === Voice Navigation on Products Page ===
+const toggleVoiceBtn = document.getElementById("toggleVoiceBtn");
+const texts = document.querySelector(".texts"); // optional feedback
+
+// Polyfill for cross-browser support
+window.SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!window.SpeechRecognition) {
+  toggleVoiceBtn.disabled = true;
+  toggleVoiceBtn.textContent = "Voice Not Supported";
+} else {
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = false;
+
+  let isListening = false;
+
+  // Start/stop toggle
+  toggleVoiceBtn.addEventListener("click", () => {
+    if (isListening) {
+      recognition.stop();
+    } else {
+      recognition.start();
+    }
+  });
+
+  recognition.addEventListener("start", () => {
+    isListening = true;
+    toggleVoiceBtn.textContent = "Turn Off Voice";
+  });
+
+  recognition.addEventListener("end", () => {
+    isListening = false;
+    toggleVoiceBtn.textContent = "Turn On Voice";
+    // auto-restart only if user still wants it
+    if (isListening) recognition.start();
+  });
+
+  recognition.addEventListener("result", (e) => {
+    // build transcript
+    const transcript = Array.from(e.results)
+      .map((r) => r[0].transcript)
+      .join("")
+      .trim()
+      .toLowerCase();
+
+    // optional UI feedback
+    if (texts) {
+      texts.innerHTML = `<p>${transcript}</p>`;
+    }
+
+    // only act on final result
+    if (e.results[e.results.length - 1].isFinal) {
+      if (transcript.includes("home")) {
+        recognition.stop(); // stop before navigating
+        window.location.href = "index.html";
+      } else if (transcript.includes("cart")) {
+        recognition.stop();
+        window.location.href = "cart.html";
+      }
+    }
+  });
+}
+
+// === Product Grid Generation ===
+fetch("./backend/products.json") // ① Adjust path to match your folder structure :contentReference[oaicite:3]{index=3}
+  .then((res) => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  })
+  .then((products) => {
+    const productList = document.getElementById("productList");
+
+    products.forEach((product) => {
+      const card = document.createElement("div");
+      card.className = "product-item";
+
+      // — Image Wrapper + <img> —
+      const imgWrapper = document.createElement("div");
+      imgWrapper.className = "product-img-wrapper";
+
+      const img = new Image(); // same as document.createElement('img') :contentReference[oaicite:4]{index=4}
+      img.className = "product-img";
+      img.src = product.image; // ② Use JSON’s image path directly :contentReference[oaicite:5]{index=5}
+      img.alt = product.name; // good alt text for accessibility :contentReference[oaicite:6]{index=6}
+
+      imgWrapper.appendChild(img);
+      card.appendChild(imgWrapper);
+
+      // — Name & Price —
+      const nameEl = document.createElement("h3");
+      nameEl.className = "product-name";
+      nameEl.textContent = product.name;
+      card.appendChild(nameEl);
+
+      const priceEl = document.createElement("p");
+      priceEl.className = "product-price";
+      priceEl.textContent = `$${(product.priceCents / 100).toFixed(2)}`;
+      card.appendChild(priceEl);
+
+      // — Quantity & Add to Cart —
+      const controls = document.createElement("div");
+      controls.className = "product-controls";
+
+      const select = document.createElement("select");
+      select.className = "quantity-select";
+      [1, 2, 3, 4, 5].forEach((n) => {
+        const opt = document.createElement("option");
+        opt.value = n;
+        opt.textContent = n;
+        select.appendChild(opt);
+      });
+      controls.appendChild(select);
+
+      const btn = document.createElement("button");
+      btn.className = "add-to-cart";
+      btn.textContent = "Add to Cart";
+      btn.addEventListener("click", (e) =>
+        addToCart(product.id, +select.value, product, e)
+      );
+      controls.appendChild(btn);
+
+      card.appendChild(controls);
+
+      productList.appendChild(card);
+    });
+
+    // Initialize search now that products exist in the DOM
+    initSearch();
+  })
+  .catch((err) => console.error("Error loading products:", err));
+
+// === Enhanced Search Function ===
+function initSearch(products) {
+  const searchInput = document.getElementById("searchInput");
+
+  searchInput.addEventListener("input", () => {
+    const term = searchInput.value.trim().toLowerCase();
+
+    document.querySelectorAll(".product-item").forEach((card) => {
+      const searchContent = [
+        card.dataset.keywords,
+        card.querySelector(".product-name").textContent,
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      card.style.display = searchContent.includes(term) ? "" : "none";
+    });
+  });
+}
+
 // === Cart Count Logic ===
 const cartCountElement = document.getElementById("cartCount");
 // Read initial count (default 0)
@@ -17,8 +169,8 @@ window.addEventListener("storage", (e) => {
   }
 });
 
-// === Manage cartItems in localStorage ===
-function addToCart(productId, quantity, event) {
+// === Updated Add to Cart Function ===
+function addToCart(productId, quantity, product, event) {
   // 1. Update the cart count
   updateCartCount(cartCount + quantity);
 
@@ -26,147 +178,24 @@ function addToCart(productId, quantity, event) {
   const storageKey = "cartItems";
   const existing = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-  // 3. Gather product data
-  const image = productImages[productId];
-  const card = event.currentTarget.closest(".product-item");
-  const name = card.querySelector(".product-name").textContent;
-  const priceText = card.querySelector(".product-price").textContent;
-  const price = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0;
-
-  // 4. Add or update the item in cartItems
+  // 3. Find existing item index
   const idx = existing.findIndex((item) => item.id === productId);
+
   if (idx > -1) {
     existing[idx].quantity += quantity;
   } else {
-    existing.push({ id: productId, name, image, price, quantity });
+    existing.push({
+      id: productId,
+      name: product.name,
+      image: product.image,
+      price: product.priceCents / 100, // Store as dollars
+      quantity: quantity,
+    });
   }
 
-  // 5. Save back to localStorage
+  // 4. Save back to localStorage
   localStorage.setItem(storageKey, JSON.stringify(existing));
 }
-
-// === Product Grid Generation ===
-const productImages = [
-  "kitchen-paper-towels-30-pack.jpg",
-  "countertop-blender-64-oz.jpg",
-  "double-elongated-twist-french-wire-earrings.webp",
-  "men-navigator-sunglasses-brown.jpg",
-  "round-sunglasses-black.jpg",
-  "non-stick-cooking-set-15-pieces.webp",
-  "women-knit-ballet-flat-black.jpg",
-  "6-piece-non-stick-baking-set.webp",
-  "cotton-bath-towels-teal.webp",
-  "6-piece-white-dinner-plate-set.jpg",
-  "knit-athletic-sneakers-pink.webp",
-  "women-beach-sandals.jpg",
-  "blackout-curtain-set-beige.webp",
-  "sky-flower-stud-earrings.webp",
-  "trash-can-with-foot-pedal-50-liter.jpg",
-  "men-chino-pants-beige.jpg",
-  "electric-glass-and-steel-hot-water-kettle.webp",
-  "women-chiffon-beachwear-coverup-black.jpg",
-  "straw-sunhat.webp",
-  "duvet-cover-set-blue-twin.jpg",
-  "facial-tissue-2-ply-18-boxes.jpg",
-  "men-golf-polo-t-shirt-blue.jpg",
-  "men-slim-fit-summer-shorts-gray.jpg",
-  "knit-athletic-sneakers-gray.jpg",
-  "bathroom-rug.jpg",
-  "floral-mixing-bowl-set.jpg",
-  "women-french-terry-fleece-jogger-camo.jpg",
-  "plain-hooded-fleece-sweatshirt-yellow.jpg",
-  "round-airtight-food-storage-containers.jpg",
-  "vanity-mirror-silver.jpg",
-  "coffeemaker-with-glass-carafe-black.jpg",
-  "black-2-slot-toaster.jpg",
-  "liquid-laundry-detergent-plain.jpg",
-  "women-chunky-beanie-gray.webp",
-  "men-cozy-fleece-zip-up-hoodie-red.jpg",
-  "blackout-curtains-black.jpg",
-  "men-athletic-shoes-green.jpg",
-  "adults-plain-cotton-tshirt-2-pack-teal.jpg",
-  "athletic-cotton-socks-6-pairs.jpg",
-  "umbrella.jpg",
-  "luxury-tower-set-6-piece.jpg",
-  "women-stretch-popover-hoodie-black.jpg",
-  "backpack.jpg",
-  "intermediate-composite-basketball.jpg",
-];
-
-const productList = document.getElementById("productList");
-
-productImages.forEach((filename, idx) => {
-  // 1) Card container
-  const card = document.createElement("div");
-  card.className = "product-item";
-
-  // 2) Image wrapper + img
-  const imgWrapper = document.createElement("div");
-  imgWrapper.className = "product-img-wrapper";
-
-  const img = new Image();
-  img.className = "product-img";
-  img.src = `assets/products/${filename}`;
-  img.alt = filename
-    .replace(/[-.]\w+$/, "")
-    .split("-")
-    .join(" ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-
-  imgWrapper.appendChild(img);
-  card.appendChild(imgWrapper);
-
-  // 3) Name & Price
-  const nameEl = document.createElement("h3");
-  nameEl.className = "product-name";
-  nameEl.textContent = img.alt;
-  card.appendChild(nameEl);
-
-  const priceEl = document.createElement("p");
-  priceEl.className = "product-price";
-  priceEl.textContent = "$20"; // replace with real price
-  card.appendChild(priceEl);
-
-  // 4) Controls wrapper
-  const controls = document.createElement("div");
-  controls.className = "product-controls";
-
-  const select = document.createElement("select");
-  select.className = "quantity-select";
-  [1, 2, 3, 4, 5].forEach((n) => {
-    const opt = document.createElement("option");
-    opt.value = n;
-    opt.textContent = `${n}`;
-    select.appendChild(opt);
-  });
-  controls.appendChild(select);
-
-  const btn = document.createElement("button");
-  btn.className = "add-to-cart";
-  btn.textContent = "Add to Cart";
-  btn.addEventListener("click", (e) => addToCart(idx, +select.value, e));
-  controls.appendChild(btn);
-
-  card.appendChild(controls);
-
-  // 5) Append card to grid
-  productList.appendChild(card);
-});
-
-// ------ Simple search -------
-// // 1. Grab the search field
-// const searchInput = document.getElementById("searchInput");
-
-// // 2. Listen for user input
-// searchInput.addEventListener("input", () => {
-//   const term = searchInput.value.toLowerCase(); // normalize case :contentReference[oaicite:0]{index=0}
-
-//   // 3. For each product card, check name and toggle visibility
-//   document.querySelectorAll(".product-item").forEach((card) => {
-//     const name = card.querySelector(".product-name").textContent.toLowerCase();
-//     card.style.display = name.includes(term) ? "" : "none"; // show/hide :contentReference[oaicite:1]{index=1}
-//   });
-// });
 
 // -------- Search with exactly word -----------
 // 1. Helper to escape regex metacharacters in the search term
