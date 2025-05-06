@@ -1,0 +1,157 @@
+/* Help Page Styles */
+.help-main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  position: relative;
+  top: -50px;
+}
+
+.help-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--light-gray);
+  border-radius: 8px;
+}
+
+.command-category {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.command-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.command-list li {
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  background: var(--white);
+  border-left: 4px solid var(--yellow);
+}
+
+.command-example {
+  padding: 1rem;
+  margin: 1rem 0;
+  background: var(--white);
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.command-badge {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+
+.troubleshooting ul {
+  list-style: circle;
+  padding-left: 1.5rem;
+}
+
+/* css/help.css */
+/* Ensure this is loaded AFTER your main stylesheet */
+
+/* Fix header spacing */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--dark-gray);
+}
+
+.help-main {
+  max-width: 800px;
+  margin: 6rem auto 2rem; /* Add top margin for fixed header */
+  padding: 0 1rem;
+}
+
+/* Enhanced troubleshooting section */
+.troubleshooting {
+  background: var(--light-gray);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  margin-bottom: 100px;
+}
+
+.troubleshooting h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.troubleshooting ul {
+  list-style: circle;
+  padding-left: 1.5rem;
+  background: var(--white);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+/* Add these new styles for optional sections */
+/* Voice Command Cheat Sheet */
+.command-cheatsheet {
+  margin: 2rem 0;
+  background: var(--white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.command-cheatsheet table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.command-cheatsheet th,
+.command-cheatsheet td {
+  padding: 1rem;
+  border: 1px solid var(--light-gray);
+  text-align: left;
+}
+
+.command-cheatsheet th {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+/* Interactive Elements */
+.interactive-demo {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: var(--light-gray);
+  border-radius: 8px;
+  text-align: center;
+}
+
+#tryCommand {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+#tryCommand:hover {
+  transform: scale(1.05);
+}
+
+#demoFeedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--white);
+  border-radius: 6px;
+  min-height: 50px;
+}

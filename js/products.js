@@ -1,63 +1,176 @@
-// === Voice Navigation on Products Page ===
+// Voice Navigation + Voice Commerce on Products Page
 const toggleVoiceBtn = document.getElementById("toggleVoiceBtn");
 const texts = document.querySelector(".texts"); // optional feedback
+const searchInput = document.getElementById("searchInput");
+const numberWords = {
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+};
 
-// Polyfill for cross-browser support
+function parseSpokenNumber(input) {
+  // Convert "three" to 3 or keep numeric value
+  return numberWords[input.toLowerCase()] || parseInt(input, 10);
+}
+
+// Setup SpeechRecognition
 window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 if (!window.SpeechRecognition) {
   toggleVoiceBtn.disabled = true;
-  toggleVoiceBtn.textContent = "Voice Not Supported";
+  toggleVoiceBtn.textContent = "Voice Unsupported";
 } else {
   const recognition = new SpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = false;
 
   let isListening = false;
+  let lastCommand = "";
+  let debounceTimer;
 
-  // Start/stop toggle
+  // Start/Stop toggle
   toggleVoiceBtn.addEventListener("click", () => {
-    if (isListening) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
+    if (isListening) recognition.stop();
+    else recognition.start();
   });
 
   recognition.addEventListener("start", () => {
     isListening = true;
     toggleVoiceBtn.textContent = "Turn Off Voice";
   });
-
   recognition.addEventListener("end", () => {
     isListening = false;
     toggleVoiceBtn.textContent = "Turn On Voice";
-    // auto-restart only if user still wants it
-    if (isListening) recognition.start();
+    // If you want auto-restart, uncomment:
+    // if (isListening) recognition.start();
   });
 
   recognition.addEventListener("result", (e) => {
-    // build transcript
     const transcript = Array.from(e.results)
       .map((r) => r[0].transcript)
       .join("")
-      .trim()
-      .toLowerCase();
+      .trim();
 
-    // optional UI feedback
+    // Show what we heard
     if (texts) {
       texts.innerHTML = `<p>${transcript}</p>`;
     }
 
-    // only act on final result
-    if (e.results[e.results.length - 1].isFinal) {
-      if (transcript.includes("home")) {
-        recognition.stop(); // stop before navigating
+    // Only on final, and avoid repeats
+    if (e.results[e.results.length - 1].isFinal && transcript !== lastCommand) {
+      lastCommand = transcript.toLowerCase();
+
+      // 1. Navigation
+      if (lastCommand.includes("home")) {
+        recognition.stop();
         window.location.href = "index.html";
-      } else if (transcript.includes("cart")) {
+        return;
+      }
+      if (lastCommand.includes("cart")) {
         recognition.stop();
         window.location.href = "cart.html";
+        return;
       }
+
+      // 2. Search: "search for <term>"
+      const searchMatch = lastCommand.match(/^search for (.+)$/);
+      if (searchMatch) {
+        const term = searchMatch[1];
+        searchInput.value = term;
+        searchInput.dispatchEvent(new Event("input")); // trigger your filter
+        if (texts) texts.innerHTML += `<p>Filtering for "${term}"</p>`;
+        return;
+      }
+
+      // 3. Add to cart: "add <product name> quantity <n>"
+      //    Or just "add <product name>"
+
+      const addMatch = lastCommand.match(
+        /^adding product number (?:(\d+)|(one|two|three|four|five|six|seven|eight|nine|ten))(?:(?: quantity (?:(\d+)|(one|two|three|four|five))))?$/i
+      );
+
+      // 2. Create number word to digit mapper
+      const numberWords = {
+        one: 1,
+        two: 2,
+        three: 3,
+        four: 4,
+        five: 5,
+        six: 6,
+        seven: 7,
+        eight: 8,
+        nine: 9,
+        ten: 10,
+      };
+
+      // Case-insensitive
+      if (addMatch) {
+        // Extract product number (either digit or word)
+        const productNumberInput = addMatch[1] || addMatch[2];
+        const productNumber =
+          numberWords[productNumberInput.toLowerCase()] ||
+          parseInt(productNumberInput, 10);
+
+        // Extract quantity (default to 1)
+        const qtyInput = addMatch[3] || addMatch[4];
+        const qty = qtyInput
+          ? numberWords[qtyInput.toLowerCase()] || parseInt(qtyInput, 10)
+          : 1;
+        // Get all visible products (including filtered ones)
+        const cards = Array.from(
+          document.querySelectorAll(
+            ".product-item:not([style*='display: none'])"
+          )
+        );
+
+        // Find product by visible index
+        const card = cards[productNumber - 1]; // Convert to 0-based index
+
+        if (card && qty >= 1 && qty <= 5) {
+          const productId = card.dataset.productId;
+          const select = card.querySelector(".quantity-select");
+          select.value = qty;
+
+          // Get product data from card
+          const product = {
+            id: productId,
+            name: card.querySelector(".product-name").textContent,
+            image: card.querySelector("img").src,
+            priceCents:
+              parseFloat(
+                card
+                  .querySelector(".product-price")
+                  .textContent.replace("$", "")
+              ) * 100,
+          };
+
+          // Add to cart
+          addToCart(productId, qty, product);
+
+          // Visual feedback
+          card.classList.add("cart-pulse");
+          setTimeout(() => card.classList.remove("cart-pulse"), 2000);
+
+          if (texts)
+            texts.innerHTML += `<p>Added ${qty} × Product ${productNumber}</p>`;
+        } else {
+          const totalProducts = cards.length;
+          if (texts)
+            texts.innerHTML += `<p>Product ${productNumber} not found. Valid numbers: 1-${totalProducts}</p>`;
+        }
+        return;
+      }
+
+      // Reset debounce
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => (lastCommand = ""), 1000);
     }
   });
 }
@@ -70,10 +183,20 @@ fetch("./backend/products.json") // ① Adjust path to match your folder structu
   })
   .then((products) => {
     const productList = document.getElementById("productList");
+    // Clear existing products
+    productList.innerHTML = "";
 
-    products.forEach((product) => {
+    products.forEach((product, index) => {
       const card = document.createElement("div");
       card.className = "product-item";
+      card.dataset.productId = product.id;
+      card.dataset.visibleIndex = index + 1; // Track visible position
+
+      // Number badge
+      const numberBadge = document.createElement("div");
+      numberBadge.className = "product-number";
+      numberBadge.textContent = index + 1; // Show 1-based index
+      card.appendChild(numberBadge);
 
       // — Image Wrapper + <img> —
       const imgWrapper = document.createElement("div");
@@ -170,15 +293,13 @@ window.addEventListener("storage", (e) => {
 });
 
 // === Updated Add to Cart Function ===
-function addToCart(productId, quantity, product, event) {
-  // 1. Update the cart count
+function addToCart(productId, quantity, product) {
+  // Remove event parameter since we're calling directly
   updateCartCount(cartCount + quantity);
 
-  // 2. Read existing cartItems or start fresh
   const storageKey = "cartItems";
   const existing = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-  // 3. Find existing item index
   const idx = existing.findIndex((item) => item.id === productId);
 
   if (idx > -1) {
@@ -188,13 +309,19 @@ function addToCart(productId, quantity, product, event) {
       id: productId,
       name: product.name,
       image: product.image,
-      price: product.priceCents / 100, // Store as dollars
+      price: product.priceCents / 100,
       quantity: quantity,
     });
   }
 
-  // 4. Save back to localStorage
   localStorage.setItem(storageKey, JSON.stringify(existing));
+
+  // Visual feedback
+  const card = document.querySelector(`[data-product-id="${productId}"]`);
+  if (card) {
+    card.classList.add("added-to-cart");
+    setTimeout(() => card.classList.remove("added-to-cart"), 1000);
+  }
 }
 
 // -------- Search with exactly word -----------
@@ -202,32 +329,6 @@ function addToCart(productId, quantity, product, event) {
 function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // escape special chars :contentReference[oaicite:6]{index=6}
 }
-
-// 2. Grab the search input (ensure it has id="searchInput")
-const searchInput = document.getElementById("searchInput");
-
-// 3. Listen for input events
-searchInput.addEventListener("input", () => {
-  const term = searchInput.value.trim().toLowerCase();
-  if (!term) {
-    // If empty, show all products
-    document.querySelectorAll(".product-item").forEach((card) => {
-      card.style.display = "";
-    });
-    return;
-  }
-
-  // 4. Create a word-boundary regex: \bterm\b
-  const escapedTerm = escapeRegex(term);
-  const regex = new RegExp(`\\b${escapedTerm}\\b`, "i"); // i = case-insensitive :contentReference[oaicite:7]{index=7}
-
-  // 5. Filter products
-  document.querySelectorAll(".product-item").forEach((card) => {
-    const name = card.querySelector(".product-name").textContent;
-    // Show only if name tests true
-    card.style.display = regex.test(name) ? "" : "none";
-  });
-});
 
 window.addEventListener("storage", (e) => {
   if (e.key === "cartItems" || e.key === "cartCount") {

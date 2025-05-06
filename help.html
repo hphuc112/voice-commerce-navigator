@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Center - Voice Commerce Navigator</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/products.css" />
+    <link rel="stylesheet" href="css/help.css" />
+  </head>
+  <body>
+    <header>
+      <!-- Header left: Toggle button for voice recognition -->
+      <div class="header-left">
+        <div>
+          <!-- <a href="index.html">
+              <img
+                src="assets/images/micro-logo-blue.png"
+                alt="Logo"
+                class="logo"
+              />
+            </a> -->
+        </div>
+        <!-- <button id="toggleVoiceBtn">Turn On Voice</button> -->
+      </div>
+      <!-- Header right: Navigation links -->
+      <div class="header-right">
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="products.html">Products</a>
+          <a href="cart.html">Cart</a>
+          <a href="help.html" class="help-link">Help</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="help-main">
+      <h1>Voice Commerce Help Center</h1>
+
+      <section class="help-section">
+        <h2>Getting Started</h2>
+        <div class="help-card">
+          <h3>Basic Navigation</h3>
+          <p>
+            Click the microphone button to start voice control. Try these
+            commands:
+          </p>
+          <div class="command-example">
+            <span class="command-badge">Try saying:</span>
+            "Go to products page"
+          </div>
+          <div class="command-example">
+            <span class="command-badge">Try saying:</span>
+            "Show my cart"
+          </div>
+        </div>
+      </section>
+
+      <section class="help-section">
+        <h2>Voice Command Reference</h2>
+
+        <div class="command-category">
+          <h3>Navigation Commands</h3>
+          <ul class="command-list">
+            <li>"Go home" - Return to main page</li>
+            <li>"Show products" - Browse products</li>
+            <li>"Open cart" - View shopping cart</li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Cart Management</h3>
+          <ul class="command-list">
+            <li>"Add product number [X]" - Add item by number</li>
+            <li>"Remove product [X]" - Remove item</li>
+            <li>"Clear cart" - Empty cart</li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Product Interactions</h3>
+          <ul class="command-list">
+            <li>"Search for [keyword]" - Find products</li>
+            <li>"Show details for product [X]" - View item</li>
+            <li>"Filter [category]" - Narrow results</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- After Command Categories sections -->
+      <section class="help-section">
+        <h2>Quick Reference</h2>
+        <div class="command-cheatsheet">
+          <h3>Voice Command Cheat Sheet</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Command Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Add Item</td>
+                <td>"Add product five", "Add number three quantity two"</td>
+              </tr>
+              <tr>
+                <td>Navigation</td>
+                <td>"Go home", "View cart", "Show products"</td>
+              </tr>
+              <tr>
+                <td>Search</td>
+                <td>"Search for headphones", "Find kitchenware"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Before Troubleshooting section -->
+      <section class="interactive-demo">
+        <h3>Try It Out</h3>
+        <button id="tryCommand">Start Voice Demo</button>
+        <div id="demoFeedback"></div>
+      </section>
+
+      <section class="help-section troubleshooting">
+        <h2>Troubleshooting</h2>
+        <div class="help-card">
+          <h3>Common Issues</h3>
+          <p><strong>Voice not working:</strong></p>
+          <ul>
+            <li>Ensure microphone access is allowed</li>
+            <li>Use Chrome browser for best compatibility</li>
+            <li>Speak clearly in quiet environment</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Voice Commere Navigator</p>
+    </footer>
+
+    <script>
+      document.getElementById("tryCommand").addEventListener("click", () => {
+        const feedback = document.getElementById("demoFeedback");
+        feedback.innerHTML = '<p>Listening... Try saying "Show products"</p>';
+
+        // Add temporary voice recognition for demo
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.onresult = (e) => {
+          const transcript = e.results[0][0].transcript;
+          feedback.innerHTML = `<p>You said: "${transcript}"</p>`;
+        };
+        recognition.start();
+      });
+    </script>
+  </body>
+</html>
