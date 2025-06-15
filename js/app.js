@@ -10,11 +10,11 @@ window.SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 if (!window.SpeechRecognition) {
   texts.innerHTML = "<p>Your browser does not support Speech Recognition.</p>";
-  toggleVoiceBtn.disabled = true; // Disable toggle if unsupported :contentReference[oaicite:6]{index=6}
+  toggleVoiceBtn.disabled = true; // Disable toggle if unsupported
 } else {
-  const recognition = new SpeechRecognition(); // Create recognizer :contentReference[oaicite:7]{index=7}
-  recognition.interimResults = true; // Allow interim results :contentReference[oaicite:8]{index=8}
-  recognition.continuous = true; // Keep listening until stopped :contentReference[oaicite:9]{index=9}
+  const recognition = new SpeechRecognition(); // Create recognizer
+  recognition.interimResults = true; // Allow interim results
+  recognition.continuous = true; // Keep listening until stopped
 
   let isListening = false; // Mic state
   let lastCommand = ""; // Debounce storage

@@ -61,6 +61,12 @@ if (!window.SpeechRecognition) {
     // Show what we heard
     if (texts) {
       texts.innerHTML = `<p>${transcript}</p>`;
+
+      // NEW: Clear command
+      if (lastCommand === "clear") {
+        if (texts) texts.innerHTML = "";
+        return;
+      }
     }
 
     // Only on final, and avoid repeats
@@ -86,6 +92,54 @@ if (!window.SpeechRecognition) {
         searchInput.value = term;
         searchInput.dispatchEvent(new Event("input")); // trigger your filter
         if (texts) texts.innerHTML += `<p>Filtering for "${term}"</p>`;
+        return;
+      }
+
+      // NEW: A1Q1 style commands
+      const aqMatch = lastCommand.match(
+        /^(?:a|add)\s*(\d+)\s*(?:q|quantity)?\s*(\d+)$/i
+      );
+      if (aqMatch) {
+        const productNumber = parseInt(aqMatch[1], 10);
+        const qty = parseInt(aqMatch[2], 10) || 1;
+
+        // Get all visible products
+        const cards = Array.from(
+          document.querySelectorAll(
+            ".product-item:not([style*='display: none'])"
+          )
+        );
+
+        const card = cards[productNumber - 1];
+
+        if (card && qty >= 1 && qty <= 5) {
+          const productId = card.dataset.productId;
+          const select = card.querySelector(".quantity-select");
+          select.value = qty;
+
+          const product = {
+            id: productId,
+            name: card.querySelector(".product-name").textContent,
+            image: card.querySelector("img").src,
+            priceCents:
+              parseFloat(
+                card
+                  .querySelector(".product-price")
+                  .textContent.replace("$", "")
+              ) * 100,
+          };
+
+          addToCart(productId, qty, product);
+
+          if (texts) {
+            texts.innerHTML += `<p>Added ${qty} × Product ${productNumber}</p>`;
+          }
+        } else {
+          const totalProducts = cards.length;
+          if (texts) {
+            texts.innerHTML += `<p>Product ${productNumber} not found. Valid numbers: 1-${totalProducts}</p>`;
+          }
+        }
         return;
       }
 
