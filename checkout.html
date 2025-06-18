@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout Complete</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --black: #1a1a1a;
+        --white: #ffffff;
+        --yellow: #ffd93d;
+        --dark-gray: #2d2d2d;
+        --medium-gray: #666;
+        --light-gray: #f5f5f5;
+        --accent-yellow: #fff3b7;
+      }
+
+      /* Reset & Base */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        padding-top: 70px;
+        min-height: 100vh;
+      }
+
+      h1,
+      h2 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+      }
+
+      /* Header */
+      .checkout-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: var(--dark-gray);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        z-index: 100;
+      }
+
+      .header-left,
+      .header-center,
+      .header-right {
+        flex: 1;
+      }
+
+      .header-center {
+        text-align: center;
+      }
+
+      .home-link {
+        font-size: 1.5rem;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      /* Main Content */
+      .checkout-main {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+        text-align: center;
+      }
+
+      .success-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--yellow);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        color: var(--black);
+      }
+
+      .success-title {
+        font-size: 2rem;
+        color: var(--black);
+        margin-bottom: 1rem;
+      }
+
+      .success-message {
+        font-size: 1.1rem;
+        color: var(--medium-gray);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .order-details {
+        background: var(--light-gray);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        text-align: left;
+      }
+
+      .order-details h3 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--black);
+      }
+
+      .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .order-item:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        color: var(--black);
+        font-size: 1.1rem;
+      }
+
+      .order-number {
+        background: var(--accent-yellow);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        margin: 1rem 0;
+        display: inline-block;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 25px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: var(--black);
+        color: var(--yellow);
+      }
+
+      .btn-primary:hover {
+        background: var(--dark-gray);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: var(--yellow);
+        color: var(--black);
+      }
+
+      .btn-secondary:hover {
+        background: #ffed4e;
+        transform: translateY(-2px);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .checkout-main {
+          margin: 2rem auto;
+        }
+
+        .success-card {
+          padding: 2rem 1rem;
+        }
+
+        .success-title {
+          font-size: 1.5rem;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 100%;
+          max-width: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Fixed Header -->
+    <header class="checkout-header">
+      <div class="header-left">
+        <a href="index.html" class="home-link">Voice Commerce Navigator</a>
+      </div>
+      <div class="header-center">
+        <h1>Checkout Complete</h1>
+      </div>
+      <div class="header-right">
+        <!-- placeholder for future icons -->
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="checkout-main">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Order Completed Successfully!</h2>
+        <p class="success-message">
+          Thank you for your purchase! Your order has been processed and you
+          will receive a confirmation email shortly.
+        </p>
+
+        <div class="order-number">
+          Order #: <span id="orderNumber">VC-2025-001</span>
+        </div>
+
+        <div class="order-details">
+          <h3>Order Summary</h3>
+          <div id="orderSummary">
+            <!-- Order items will be populated here -->
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+          <button class="btn btn-secondary" onclick="window.print()">
+            Print Receipt
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Generate random order number
+      function generateOrderNumber() {
+        const timestamp = Date.now().toString().slice(-6);
+        const random = Math.floor(Math.random() * 1000)
+          .toString()
+          .padStart(3, "0");
+        return `VC-2025-${timestamp}${random}`;
+      }
+
+      // Load and display order summary
+      function displayOrderSummary() {
+        const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        const orderSummaryDiv = document.getElementById("orderSummary");
+
+        if (cartItems.length === 0) {
+          orderSummaryDiv.innerHTML = "<p>No items found in your order.</p>";
+          return;
+        }
+
+        let summaryHTML = "";
+        let totalPrice = 0;
+
+        cartItems.forEach((item) => {
+          const itemTotal = item.price * item.quantity;
+          totalPrice += itemTotal;
+          summaryHTML += `
+            <div class="order-item">
+              <span>${item.name} × ${item.quantity}</span>
+              <span>$${itemTotal.toFixed(2)}</span>
+            </div>
+          `;
+        });
+
+        // Add total
+        summaryHTML += `
+          <div class="order-item">
+            <span><strong>Total</strong></span>
+            <span><strong>$${totalPrice.toFixed(2)}</strong></span>
+          </div>
+        `;
+
+        orderSummaryDiv.innerHTML = summaryHTML;
+
+        // Clear cart after successful checkout
+        localStorage.removeItem("cartItems");
+        localStorage.setItem("cartCount", "0");
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set random order number
+        document.getElementById("orderNumber").textContent =
+          generateOrderNumber();
+
+        // Display order summary
+        displayOrderSummary();
+      });
+    </script>
+  </body>
+</html>

@@ -97,6 +97,11 @@ function renderCart() {
   summaryContainer
     .querySelector(".clear-cart-btn")
     .addEventListener("click", clearCart);
+
+  // Hook up proceed to checkout button
+  summaryContainer
+    .querySelector(".proceed-button")
+    .addEventListener("click", proceedToCheckout);
 }
 
 // Increase or decrease quantity (delta = ±1)
@@ -138,4 +143,15 @@ function updateCartCount() {
   const cartItems = getCartItems();
   const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   localStorage.setItem("cartCount", totalQty);
+}
+
+// Add this new function here:
+function proceedToCheckout() {
+  const cartItems = getCartItems();
+  if (cartItems.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+  // Redirect to checkout page
+  window.location.href = "checkout.html";
 }
