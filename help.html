@@ -10,20 +10,9 @@
   </head>
   <body>
     <header>
-      <!-- Header left: Toggle button for voice recognition -->
       <div class="header-left">
-        <div>
-          <!-- <a href="index.html">
-              <img
-                src="assets/images/micro-logo-blue.png"
-                alt="Logo"
-                class="logo"
-              />
-            </a> -->
-        </div>
-        <!-- <button id="toggleVoiceBtn">Turn On Voice</button> -->
+        <div></div>
       </div>
-      <!-- Header right: Navigation links -->
       <div class="header-right">
         <nav>
           <a href="index.html">Home</a>
@@ -38,56 +27,125 @@
       <h1>Voice Commerce Help Center</h1>
 
       <section class="help-section">
-        <h2>Getting Started</h2>
         <div class="help-card">
-          <h3>Basic Navigation</h3>
+          <h1>How to Use Voice Commands</h1>
           <p>
-            Click the microphone button to start voice control. Try these
-            commands:
+            Click the <strong>"Turn On Voice"</strong> button to start voice
+            control. The system will listen for your commands and respond
+            accordingly.
           </p>
           <div class="command-example">
-            <span class="command-badge">Try saying:</span>
-            "Go to products page"
+            <span class="command-badge">Quick Start:</span>
+            Click "Turn On Voice" → Say "show products" → Browse items with
+            voice commands
           </div>
           <div class="command-example">
-            <span class="command-badge">Try saying:</span>
-            "Show my cart"
+            <span class="command-badge">Browser Requirements:</span>
+            Chrome/Edge recommended, Microphone permissions
           </div>
         </div>
       </section>
 
       <section class="help-section">
-        <h2>Voice Command Reference</h2>
+        <h2>Navigation Commands</h2>
 
         <div class="command-category">
-          <h3>Navigation Commands</h3>
+          <h3>Products Page Navigation</h3>
           <ul class="command-list">
-            <li>"Go home" - Return to main page</li>
-            <li>"Show products" - Browse products</li>
-            <li>"Open cart" - View shopping cart</li>
+            <li>"show products" • "open products" • "products"</li>
+            <li>"product page" • "go to products" • "view products"</li>
+            <li>"see products" • "browse products" • "show me products"</li>
+            <li>
+              "take me to products" • "where are products" • "product list"
+            </li>
+            <li>"items list" • "view items" • "show items"</li>
+            <li>"what do you sell" • "show catalog" • "view catalog"</li>
           </ul>
         </div>
 
         <div class="command-category">
-          <h3>Cart Management</h3>
+          <h3>Cart Page Navigation</h3>
           <ul class="command-list">
-            <li>"Add product number [X]" - Add item by number</li>
-            <li>"Remove product [X]" - Remove item</li>
-            <li>"Clear cart" - Empty cart</li>
+            <li>"cart" • "my cart" • "view cart" • "open cart"</li>
+            <li>"shopping cart" • "go to cart" • "show cart"</li>
+            <li>"see my cart" • "browse cart" • "where is my cart"</li>
+            <li>"shopping bag" • "view my items" • "what's in my cart"</li>
+            <li>"checkout" • "review cart"</li>
           </ul>
         </div>
 
         <div class="command-category">
-          <h3>Product Interactions</h3>
+          <h3>Home Page Navigation</h3>
           <ul class="command-list">
-            <li>"Search for [keyword]" - Find products</li>
-            <li>"Show details for product [X]" - View item</li>
-            <li>"Filter [category]" - Narrow results</li>
+            <li>"home" • "main page" • "go home" • "index"</li>
+            <li>"return home" • "back to home" • "start over"</li>
+            <li>"main menu" • "home screen" • "homepage"</li>
+            <li>"go to main" • "take me home"</li>
           </ul>
         </div>
       </section>
 
-      <!-- After Command Categories sections -->
+      <section class="help-section">
+        <h2>Shopping Commands (Products Page Only)</h2>
+
+        <div class="command-category">
+          <h3>Search Products</h3>
+          <div class="command-example">
+            <span class="command-badge">Format:</span>
+            "search for [product name]"
+          </div>
+          <ul class="command-list">
+            <li>"search for laptop" • "search for phone"</li>
+            <li>"search for headphones" • "search for [any product]"</li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Add Products to Cart - Method 1 (A1Q1 Format)</h3>
+          <div class="command-example">
+            <span class="command-badge">Format:</span>
+            "A[product_number]Q[quantity]" or "add [product_number] quantity
+            [quantity]"
+          </div>
+          <ul class="command-list">
+            <li>"A1Q1" (Add product 1, quantity 1)</li>
+            <li>"A2Q3" (Add product 2, quantity 3)</li>
+            <li>"add 1 quantity 2" • "add 3 quantity 1"</li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Add Products to Cart - Method 2 (Natural Language)</h3>
+          <div class="command-example">
+            <span class="command-badge">Format:</span>
+            "adding product number [number/word] quantity [number/word]"
+          </div>
+          <h4>With Numbers:</h4>
+          <ul class="command-list">
+            <li>"adding product number 1"</li>
+            <li>"adding product number 2 quantity 3"</li>
+            <li>"adding product number 5 quantity 2"</li>
+          </ul>
+          <h4>With Words:</h4>
+          <ul class="command-list">
+            <li>"adding product number one"</li>
+            <li>"adding product number two quantity three"</li>
+            <li>"adding product number five quantity two"</li>
+          </ul>
+          <div class="command-example">
+            <span class="command-badge">Supported Number Words:</span>
+            one, two, three, four, five, six, seven, eight, nine, ten
+          </div>
+        </div>
+
+        <div class="command-category">
+          <h3>Clear Display</h3>
+          <ul class="command-list">
+            <li>"clear" (clears the transcript display on products page)</li>
+          </ul>
+        </div>
+      </section>
+
       <section class="help-section">
         <h2>Quick Reference</h2>
         <div class="command-cheatsheet">
@@ -97,27 +155,118 @@
               <tr>
                 <th>Action</th>
                 <th>Command Examples</th>
+                <th>Notes</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>Add Item</td>
-                <td>"Add product five", "Add number three quantity two"</td>
+                <td>Navigate to Products</td>
+                <td>"show products", "view catalog"</td>
+                <td>Multiple variations available</td>
               </tr>
               <tr>
-                <td>Navigation</td>
-                <td>"Go home", "View cart", "Show products"</td>
+                <td>Navigate to Cart</td>
+                <td>"cart", "view cart", "checkout"</td>
+                <td>Stops voice recognition</td>
               </tr>
               <tr>
-                <td>Search</td>
-                <td>"Search for headphones", "Find kitchenware"</td>
+                <td>Navigate to Home</td>
+                <td>"home", "go home", "start over"</td>
+                <td>Returns to main page</td>
+              </tr>
+              <tr>
+                <td>Search Products</td>
+                <td>"search for headphones"</td>
+                <td>Products page only</td>
+              </tr>
+              <tr>
+                <td>Add Item (Short)</td>
+                <td>"A1Q1", "A5Q2"</td>
+                <td>Quick format</td>
+              </tr>
+              <tr>
+                <td>Add Item (Natural)</td>
+                <td>"adding product number five quantity two"</td>
+                <td>Supports word numbers</td>
+              </tr>
+              <tr>
+                <td>Clear Display</td>
+                <td>"clear"</td>
+                <td>Products page only</td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- Before Troubleshooting section -->
+      <section class="help-section">
+        <h2>System Information</h2>
+
+        <div class="command-category">
+          <h3>Product Numbering</h3>
+          <ul class="command-list">
+            <li>
+              Products are numbered 1-10 based on their visual position on the
+              page
+            </li>
+            <li>Each product card shows its number in the top-left corner</li>
+            <li>Numbers update dynamically when you filter/search products</li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Quantity Limits</h3>
+          <ul class="command-list">
+            <li>Minimum quantity: 1</li>
+            <li>Maximum quantity: 5</li>
+            <li>
+              Both numeric (1, 2, 3) and word forms (one, two, three) are
+              supported
+            </li>
+          </ul>
+        </div>
+
+        <div class="command-category">
+          <h3>Voice Recognition Behavior</h3>
+          <ul class="command-list">
+            <li>
+              Commands are processed only when speech recognition marks them as
+              "final"
+            </li>
+            <li>Debounce system prevents duplicate commands within 1 second</li>
+            <li>Navigation commands stop voice recognition automatically</li>
+            <li>Auto-restart can be enabled (currently commented out)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="help-section">
+        <h2>Recommended Test Sequence</h2>
+        <div class="command-category">
+          <h3>Step-by-Step Testing</h3>
+          <div class="command-example">
+            <span class="command-badge">1. Start with Navigation:</span>
+            "Turn On Voice" → "show products" → "go to cart" → "go home"
+          </div>
+          <div class="command-example">
+            <span class="command-badge">2. Test Search:</span>
+            On products page: "search for [item name]"
+          </div>
+          <div class="command-example">
+            <span class="command-badge">3. Test Adding Items:</span>
+            "A3Q2"
+          </div>
+          <div class="command-example">
+            <span class="command-badge">4. Test Word Numbers:</span>
+            "adding product number five quantity two"
+          </div>
+          <div class="command-example">
+            <span class="command-badge">5. Test Error Handling:</span>
+            Try invalid product numbers or invalid quantities (0, 11,...)
+          </div>
+        </div>
+      </section>
+
       <section class="interactive-demo">
         <h3>Try It Out</h3>
         <button id="tryCommand">Start Voice Demo</button>
@@ -130,30 +279,88 @@
           <h3>Common Issues</h3>
           <p><strong>Voice not working:</strong></p>
           <ul>
-            <li>Ensure microphone access is allowed</li>
-            <li>Use Chrome browser for best compatibility</li>
-            <li>Speak clearly in quiet environment</li>
+            <li>Ensure microphone access is allowed in your browser</li>
+            <li>Use Chrome or Edge browser for best compatibility</li>
+            <li>Speak clearly in a quiet environment</li>
+            <li>Make sure you're on HTTPS for production use</li>
+          </ul>
+
+          <p><strong>Commands not recognized:</strong></p>
+          <ul>
+            <li>
+              Wait for the system to finish processing before speaking again
+            </li>
+            <li>Use exact command phrases from the reference above</li>
+            <li>
+              Check that you're on the correct page (some commands work only on
+              specific pages)
+            </li>
+            <li>Try the alternative command variations listed</li>
+          </ul>
+
+          <p><strong>Adding items not working:</strong></p>
+          <ul>
+            <li>Ensure you're on the products page</li>
+            <li>Try product numbers 1-5</li>
+            <li>Try quantities 1-5</li>
+            <li>Try both numeric and word formats</li>
           </ul>
         </div>
       </section>
     </main>
 
     <footer>
-      <p>Voice Commere Navigator</p>
+      <p>Voice Commerce Navigator</p>
     </footer>
 
     <script>
       document.getElementById("tryCommand").addEventListener("click", () => {
         const feedback = document.getElementById("demoFeedback");
-        feedback.innerHTML = '<p>Listening... Try saying "Show products"</p>';
+        feedback.innerHTML =
+          '<p>Listening... Try saying "show products" or "adding product number one"</p>';
+
+        // Check if speech recognition is available
+        if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+          feedback.innerHTML =
+            "<p>Speech recognition not supported in this browser. Please use Chrome or Edge.</p>";
+          return;
+        }
 
         // Add temporary voice recognition for demo
         const recognition = new (window.SpeechRecognition ||
           window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
         recognition.onresult = (e) => {
-          const transcript = e.results[0][0].transcript;
-          feedback.innerHTML = `<p>You said: "${transcript}"</p>`;
+          const transcript = e.results[0][0].transcript.toLowerCase();
+          let response = `<p>You said: "${transcript}"</p>`;
+
+          // Provide contextual feedback
+          if (transcript.includes("product")) {
+            response += "<p>Product commands work on the Products page</p>";
+          } else if (transcript.includes("cart")) {
+            response += "<p>This would navigate to your cart</p>";
+          } else if (transcript.includes("home")) {
+            response += "<p>This would take you to the home page</p>";
+          } else if (transcript.includes("search")) {
+            response += "<p>Search commands work on the Products page</p>";
+          }
+
+          feedback.innerHTML = response;
         };
+
+        recognition.onerror = (e) => {
+          feedback.innerHTML = `<p>Error: ${e.error}. Please check your microphone permissions.</p>`;
+        };
+
+        recognition.onend = () => {
+          setTimeout(() => {
+            feedback.innerHTML =
+              "<p>Demo ended. Click the button to try again!</p>";
+          }, 3000);
+        };
+
         recognition.start();
       });
     </script>

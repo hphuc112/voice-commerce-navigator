@@ -137,7 +137,7 @@ if (!window.SpeechRecognition) {
         } else {
           const totalProducts = cards.length;
           if (texts) {
-            texts.innerHTML += `<p>Product ${productNumber} not found. Valid numbers: 1-${totalProducts}</p>`;
+            texts.innerHTML += `<p>Product ${productNumber} not found or Invalid quantities</p>`;
           }
         }
         return;
@@ -217,7 +217,7 @@ if (!window.SpeechRecognition) {
         } else {
           const totalProducts = cards.length;
           if (texts)
-            texts.innerHTML += `<p>Product ${productNumber} not found. Valid numbers: 1-${totalProducts}</p>`;
+            texts.innerHTML += `<p>Product ${productNumber} not found or Invalid quantities</p>`;
         }
         return;
       }
@@ -230,7 +230,7 @@ if (!window.SpeechRecognition) {
 }
 
 // === Product Grid Generation ===
-fetch("./backend/products.json") // ① Adjust path to match your folder structure :contentReference[oaicite:3]{index=3}
+fetch("./backend/products.json") // ① Adjust path to match your folder structure
   .then((res) => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
