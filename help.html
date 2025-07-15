@@ -364,5 +364,23 @@
         recognition.start();
       });
     </script>
+    <script src="js/auth.js"></script>
+    <script>
+      // Check login status and update UI
+      const currentUser = auth.getCurrentUser();
+      if (currentUser) {
+        // Show user content
+        document
+          .querySelectorAll(".user-only")
+          .forEach((el) => (el.style.display = "block"));
+        document
+          .querySelectorAll(".guest-only")
+          .forEach((el) => (el.style.display = "none"));
+        // Add user menu to navigation
+        // (see example in usage_examples.html)
+      }
+    </script>
+    <script src="js/your-page-script.js"></script>
+    <script src="js/app.js"></script>
   </body>
 </html>

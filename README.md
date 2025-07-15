@@ -36,6 +36,7 @@ This project explores voice interface integration in e-commerce platforms to enh
 
 🛒 **E-Commerce Features**
 
+- Authentication login with username: demo@example.com, password: demo123
 - Product catalog with dynamic loading
 - Persistent shopping cart
 - Voice quantity selection

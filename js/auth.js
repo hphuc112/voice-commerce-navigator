@@ -1,36 +1,25 @@
-// Authentication management for Voice Commerce Navigator
-class AuthManager {
+// Enhanced Authentication System for Voice Commerce Navigator
+// Uses localStorage for simple user management (prototype/demo purposes)
+
+class AuthSystem {
   constructor() {
     this.currentUser = null;
     this.users = this.loadUsers();
     this.init();
   }
 
-  // Initialize authentication system
   init() {
     // Check if user is already logged in
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      this.currentUser = JSON.parse(storedUser);
+    const savedUser = localStorage.getItem("vcn_currentUser");
+    if (savedUser) {
+      this.currentUser = JSON.parse(savedUser);
       this.updateUIForLoggedInUser();
     }
 
-    // Set up event listeners
+    // Add event listeners for forms
     this.setupEventListeners();
   }
 
-  // Load users from localStorage (simulating backend)
-  loadUsers() {
-    const users = localStorage.getItem("users");
-    return users ? JSON.parse(users) : [];
-  }
-
-  // Save users to localStorage
-  saveUsers() {
-    localStorage.setItem("users", JSON.stringify(this.users));
-  }
-
-  // Set up event listeners for forms
   setupEventListeners() {
     // Login form
     const loginForm = document.getElementById("loginForm");
@@ -50,205 +39,158 @@ class AuthManager {
           this.checkPasswordStrength(e.target.value)
         );
       }
+
+      // Password confirmation checker
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+      if (confirmPasswordInput) {
+        confirmPasswordInput.addEventListener("input", (e) =>
+          this.validatePasswordMatch()
+        );
+      }
     }
 
-    // Logout functionality (for other pages)
+    // Logout functionality (if logout button exists)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => this.logout());
     }
   }
 
-  // Handle login form submission
-  async handleLogin(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const rememberMe = document.getElementById("rememberMe").checked;
-
-    try {
-      const user = this.authenticateUser(email, password);
-
-      if (user) {
-        this.currentUser = user;
-
-        // Store user session
-        if (rememberMe) {
-          localStorage.setItem("currentUser", JSON.stringify(user));
-        } else {
-          sessionStorage.setItem("currentUser", JSON.stringify(user));
-        }
-
-        // Update last login
-        user.lastLogin = new Date().toISOString();
-        this.saveUsers();
-
-        // Show success message
-        this.showMessage("Login successful! Redirecting...", "success");
-
-        // Redirect to products page after short delay
-        setTimeout(() => {
-          window.location.href = "products.html";
-        }, 1500);
-      } else {
-        this.showMessage(
-          "Invalid email or password. Please try again.",
-          "error"
-        );
-      }
-    } catch (error) {
-      this.showMessage("Login failed. Please try again.", "error");
-      console.error("Login error:", error);
-    }
+  // Load users from localStorage
+  loadUsers() {
+    const users = localStorage.getItem("vcn_users");
+    return users ? JSON.parse(users) : [];
   }
 
-  // Handle register form submission
-  async handleRegister(event) {
-    event.preventDefault();
-
-    const firstName = document.getElementById("firstName").value;
-    const lastName = document.getElementById("lastName").value;
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    const agreeTerms = document.getElementById("agreeTerms").checked;
-
-    try {
-      // Validation
-      if (
-        !this.validateRegistration(
-          firstName,
-          lastName,
-          email,
-          password,
-          confirmPassword,
-          agreeTerms
-        )
-      ) {
-        return;
-      }
-
-      // Check if user already exists
-      if (this.findUserByEmail(email)) {
-        this.showMessage("An account with this email already exists.", "error");
-        return;
-      }
-
-      // Create new user
-      const newUser = {
-        id: this.generateUserId(),
-        firstName,
-        lastName,
-        email,
-        password: this.hashPassword(password), // In production, use proper hashing
-        createdAt: new Date().toISOString(),
-        lastLogin: null,
-        isActive: true,
-      };
-
-      this.users.push(newUser);
-      this.saveUsers();
-
-      this.showMessage(
-        "Account created successfully! Please log in.",
-        "success"
-      );
-
-      // Redirect to login page after short delay
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
-    } catch (error) {
-      this.showMessage("Registration failed. Please try again.", "error");
-      console.error("Registration error:", error);
-    }
+  // Save users to localStorage
+  saveUsers() {
+    localStorage.setItem("vcn_users", JSON.stringify(this.users));
   }
 
-  // Authenticate user credentials
-  authenticateUser(email, password) {
-    return this.users.find(
-      (user) =>
-        user.email === email &&
-        user.password === this.hashPassword(password) &&
-        user.isActive
+  // Handle user registration
+  handleRegister(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const userData = {
+      firstName: formData.get("firstName").trim(),
+      lastName: formData.get("lastName").trim(),
+      email: formData.get("email").trim().toLowerCase(),
+      password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
+      agreeTerms: formData.get("agreeTerms"),
+    };
+
+    // Validation
+    if (!this.validateRegistration(userData)) {
+      return;
+    }
+
+    // Check if user already exists
+    if (this.users.find((user) => user.email === userData.email)) {
+      this.showMessage("An account with this email already exists.", "error");
+      return;
+    }
+
+    // Create new user
+    const newUser = {
+      id: Date.now().toString(),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      password: userData.password, // In real app, this would be hashed
+      createdAt: new Date().toISOString(),
+      preferences: {
+        voiceEnabled: false,
+        theme: "light",
+      },
+    };
+
+    this.users.push(newUser);
+    this.saveUsers();
+
+    this.showMessage(
+      "Account created successfully! You can now sign in.",
+      "success"
     );
+
+    // Redirect to login page after short delay
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1500);
   }
 
-  // Find user by email
-  findUserByEmail(email) {
-    return this.users.find((user) => user.email === email);
+  // Handle user login
+  handleLogin(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const email = formData.get("email").trim().toLowerCase();
+    const password = formData.get("password");
+    const rememberMe = formData.get("rememberMe");
+
+    // Find user
+    const user = this.users.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!user) {
+      this.showMessage("Invalid email or password.", "error");
+      return;
+    }
+
+    // Set current user
+    this.currentUser = user;
+
+    // Save login state
+    if (rememberMe) {
+      localStorage.setItem("vcn_currentUser", JSON.stringify(user));
+    } else {
+      sessionStorage.setItem("vcn_currentUser", JSON.stringify(user));
+    }
+
+    this.showMessage("Login successful! Redirecting...", "success");
+
+    // Redirect to home page
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1000);
   }
 
-  // Validate registration form
-  validateRegistration(
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    agreeTerms
-  ) {
-    if (!firstName.trim()) {
-      this.showMessage("First name is required.", "error");
+  // Validate registration data
+  validateRegistration(userData) {
+    if (!userData.firstName || !userData.lastName) {
+      this.showMessage("Please fill in all required fields.", "error");
       return false;
     }
 
-    if (!lastName.trim()) {
-      this.showMessage("Last name is required.", "error");
-      return false;
-    }
-
-    if (!this.validateEmail(email)) {
+    if (!this.isValidEmail(userData.email)) {
       this.showMessage("Please enter a valid email address.", "error");
       return false;
     }
 
-    if (!this.validatePassword(password)) {
-      this.showMessage(
-        "Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character.",
-        "error"
-      );
+    if (userData.password.length < 6) {
+      this.showMessage("Password must be at least 6 characters long.", "error");
       return false;
     }
 
-    if (password !== confirmPassword) {
+    if (userData.password !== userData.confirmPassword) {
       this.showMessage("Passwords do not match.", "error");
       return false;
     }
 
-    if (!agreeTerms) {
-      this.showMessage("You must agree to the terms and conditions.", "error");
+    if (!userData.agreeTerms) {
+      this.showMessage(
+        "You must agree to the Terms of Service and Privacy Policy.",
+        "error"
+      );
       return false;
     }
 
     return true;
   }
 
-  // Validate email format
-  validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  // Validate password strength
-  validatePassword(password) {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    return (
-      password.length >= minLength &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasNumbers &&
-      hasSpecialChar
-    );
-  }
-
-  // Check password strength and update UI
+  // Check password strength
   checkPasswordStrength(password) {
     const strengthFill = document.getElementById("strengthFill");
     const strengthText = document.getElementById("strengthText");
@@ -256,95 +198,65 @@ class AuthManager {
     if (!strengthFill || !strengthText) return;
 
     let strength = 0;
-    let strengthLabel = "";
-    let strengthColor = "";
+    let text = "";
+    let color = "";
 
-    if (password.length >= 8) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/\d/.test(password)) strength += 1;
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 1;
+    if (password.length === 0) {
+      text = "Enter password";
+      color = "#ddd";
+    } else if (password.length < 6) {
+      strength = 25;
+      text = "Too short";
+      color = "#ff4444";
+    } else {
+      strength = 25;
+      if (password.length >= 8) strength += 25;
+      if (/[A-Z]/.test(password)) strength += 25;
+      if (/[0-9]/.test(password) || /[!@#$%^&*]/.test(password)) strength += 25;
 
-    switch (strength) {
-      case 0:
-      case 1:
-        strengthLabel = "Very Weak";
-        strengthColor = "#ff4444";
-        break;
-      case 2:
-        strengthLabel = "Weak";
-        strengthColor = "#ff8800";
-        break;
-      case 3:
-        strengthLabel = "Fair";
-        strengthColor = "#ffaa00";
-        break;
-      case 4:
-        strengthLabel = "Good";
-        strengthColor = "#88cc00";
-        break;
-      case 5:
-        strengthLabel = "Strong";
-        strengthColor = "#00cc44";
-        break;
-    }
-
-    strengthFill.style.width = `${(strength / 5) * 100}%`;
-    strengthFill.style.backgroundColor = strengthColor;
-    strengthText.textContent = strengthLabel;
-  }
-
-  // Simple password hashing (use proper hashing in production)
-  hashPassword(password) {
-    // This is a simple hash for demo purposes
-    // In production, use bcrypt or similar
-    let hash = 0;
-    for (let i = 0; i < password.length; i++) {
-      const char = password.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32-bit integer
-    }
-    return hash.toString();
-  }
-
-  // Generate unique user ID
-  generateUserId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-  }
-
-  // Logout user
-  logout() {
-    this.currentUser = null;
-    localStorage.removeItem("currentUser");
-    sessionStorage.removeItem("currentUser");
-
-    // Redirect to home page
-    window.location.href = "index.html";
-  }
-
-  // Check if user is logged in
-  isLoggedIn() {
-    return this.currentUser !== null;
-  }
-
-  // Get current user
-  getCurrentUser() {
-    return this.currentUser;
-  }
-
-  // Update UI for logged in user
-  updateUIForLoggedInUser() {
-    // Update navigation to show user info or logout option
-    // This can be customized based on your UI needs
-    const authLinks = document.querySelectorAll(".auth-links");
-    authLinks.forEach((link) => {
-      if (this.currentUser) {
-        link.innerHTML = `
-          <span>Welcome, ${this.currentUser.firstName}!</span>
-          <button id="logoutBtn" class="logout-btn">Logout</button>
-        `;
+      if (strength <= 25) {
+        text = "Weak";
+        color = "#ff4444";
+      } else if (strength <= 50) {
+        text = "Fair";
+        color = "#ffa500";
+      } else if (strength <= 75) {
+        text = "Good";
+        color = "#00aa00";
+      } else {
+        text = "Strong";
+        color = "#008800";
       }
-    });
+    }
+
+    strengthFill.style.width = `${strength}%`;
+    strengthFill.style.backgroundColor = color;
+    strengthText.textContent = text;
+    strengthText.style.color = color;
+  }
+
+  // Validate password match
+  validatePasswordMatch() {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const confirmInput = document.getElementById("confirmPassword");
+
+    if (confirmPassword === "") {
+      confirmInput.style.borderColor = "";
+      return;
+    }
+
+    if (password === confirmPassword) {
+      confirmInput.style.borderColor = "#00aa00";
+    } else {
+      confirmInput.style.borderColor = "#ff4444";
+    }
+  }
+
+  // Validate email format
+  isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   // Show message to user
@@ -360,21 +272,46 @@ class AuthManager {
     messageDiv.className = `auth-message ${type}`;
     messageDiv.textContent = message;
 
-    // Insert message at the top of the form
+    // Insert message
     const authCard = document.querySelector(".auth-card");
     if (authCard) {
       authCard.insertBefore(messageDiv, authCard.firstChild);
     }
 
-    // Auto-remove message after 5 seconds
+    // Remove message after 5 seconds
     setTimeout(() => {
-      if (messageDiv.parentNode) {
-        messageDiv.remove();
-      }
+      messageDiv.remove();
     }, 5000);
   }
 
-  // Protect routes (redirect to login if not authenticated)
+  // Update UI for logged in user
+  updateUIForLoggedInUser() {
+    // This can be expanded based on your needs
+    const userInfo = document.getElementById("userInfo");
+    if (userInfo && this.currentUser) {
+      userInfo.textContent = `Welcome, ${this.currentUser.firstName}!`;
+    }
+  }
+
+  // Logout user
+  logout() {
+    this.currentUser = null;
+    localStorage.removeItem("vcn_currentUser");
+    sessionStorage.removeItem("vcn_currentUser");
+    window.location.href = "login.html";
+  }
+
+  // Check if user is logged in
+  isLoggedIn() {
+    return this.currentUser !== null;
+  }
+
+  // Get current user
+  getCurrentUser() {
+    return this.currentUser;
+  }
+
+  // Protect page (redirect to login if not authenticated)
   requireAuth() {
     if (!this.isLoggedIn()) {
       window.location.href = "login.html";
@@ -382,14 +319,157 @@ class AuthManager {
     }
     return true;
   }
+
+  // Create demo user (for testing)
+  createDemoUser() {
+    const demoUser = {
+      id: "demo",
+      firstName: "Demo",
+      lastName: "User",
+      email: "demo@example.com",
+      password: "demo123",
+      createdAt: new Date().toISOString(),
+      preferences: {
+        voiceEnabled: true,
+        theme: "light",
+      },
+    };
+
+    // Only add if doesn't exist
+    if (!this.users.find((u) => u.email === demoUser.email)) {
+      this.users.push(demoUser);
+      this.saveUsers();
+    }
+  }
 }
 
-// Initialize authentication when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  window.authManager = new AuthManager();
-});
+// Initialize authentication system
+const auth = new AuthSystem();
+
+// Create demo user for testing
+auth.createDemoUser();
 
 // Export for use in other files
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = AuthManager;
-}
+window.auth = auth;
+
+// Enhanced redirect logic for login success
+// Add this to your existing auth.js file
+
+// Update the handleLogin method in AuthSystem class
+AuthSystem.prototype.handleLoginWithRedirect = function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const email = formData.get("email").trim().toLowerCase();
+  const password = formData.get("password");
+  const rememberMe = formData.get("rememberMe");
+
+  // Find user
+  const user = this.users.find(
+    (u) => u.email === email && u.password === password
+  );
+
+  if (!user) {
+    this.showMessage("Invalid email or password.", "error");
+    return;
+  }
+
+  // Set current user
+  this.currentUser = user;
+
+  // Save login state
+  if (rememberMe) {
+    localStorage.setItem("vcn_currentUser", JSON.stringify(user));
+  } else {
+    sessionStorage.setItem("vcn_currentUser", JSON.stringify(user));
+  }
+
+  this.showMessage("Login successful! Redirecting...", "success");
+
+  // Check for return URL
+  const returnUrl = sessionStorage.getItem("vcn_returnUrl");
+  const redirectUrl = returnUrl || "index.html";
+
+  // Clear return URL
+  sessionStorage.removeItem("vcn_returnUrl");
+
+  // Redirect
+  setTimeout(() => {
+    window.location.href = redirectUrl;
+  }, 1000);
+};
+
+// Auto-redirect if already logged in (for login/register pages)
+AuthSystem.prototype.checkExistingLogin = function () {
+  const currentPage = window.location.pathname.split("/").pop();
+  if (
+    (currentPage === "login.html" || currentPage === "register.html") &&
+    this.isLoggedIn()
+  ) {
+    // User is already logged in, redirect to home
+    window.location.href = "index.html";
+  }
+};
+
+// Update the constructor to include the redirect check
+const originalInit = AuthSystem.prototype.init;
+AuthSystem.prototype.init = function () {
+  originalInit.call(this);
+  this.checkExistingLogin();
+
+  // Update login form handler if it exists
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.removeEventListener("submit", this.handleLogin);
+    loginForm.addEventListener("submit", (e) =>
+      this.handleLoginWithRedirect(e)
+    );
+  }
+};
+
+// Demo user credentials helper
+AuthSystem.prototype.fillDemoCredentials = function () {
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+
+  if (emailInput && passwordInput) {
+    emailInput.value = "demo@example.com";
+    passwordInput.value = "demo123";
+
+    // Show helpful message
+    this.showMessage(
+      'Demo credentials filled! Click "Sign In" to continue.',
+      "info"
+    );
+  }
+};
+
+// Add demo button to login form
+AuthSystem.prototype.addDemoButton = function () {
+  const loginForm = document.getElementById("loginForm");
+  if (!loginForm) return;
+
+  const demoButton = document.createElement("button");
+  demoButton.type = "button";
+  demoButton.className = "auth-btn secondary";
+  demoButton.textContent = "Try Demo Account";
+  demoButton.style.marginTop = "10px";
+  demoButton.addEventListener("click", () => this.fillDemoCredentials());
+
+  // Insert before the submit button
+  const submitButton = loginForm.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.parentNode.insertBefore(demoButton, submitButton);
+  }
+};
+
+// Call addDemoButton in init for login pages
+const originalSetupEventListeners = AuthSystem.prototype.setupEventListeners;
+AuthSystem.prototype.setupEventListeners = function () {
+  originalSetupEventListeners.call(this);
+
+  // Add demo button on login page
+  if (document.getElementById("loginForm")) {
+    this.addDemoButton();
+  }
+};
