@@ -1,21 +1,15 @@
 # Voice-Activated E-Commerce Navigation System
 
-[Thesis Report (PDF)](https://drive.google.com/file/d/18Qc-Nd5Cza-4ciu5AfU5wTjmh1E1n-oj/view?usp=sharing)
+## Demo
+
+Watch the video walkthrough and [Thesis Report (PDF)](https://drive.google.com/file/d/18Qc-Nd5Cza-4ciu5AfU5wTjmh1E1n-oj/view?usp=sharing) in this Google Drive folder: [Video Demo](https://drive.google.com/drive/folders/18LI0vDNOfUB4_fFyzvjmr18duwB5qCXl?usp=sharing)
 
 A thesis project implementing voice navigation in e-commerce websites using the Web Speech API, enhancing accessibility and efficiency through hands-free interaction.
 
 ## Table of Contents
 
-- [Abstract](#abstract)
-- [Features](#features)
-- [Thesis Components](#thesis-components)
-- [Technical Stack](#technical-stack)
-- [Methodology](#methodology)
-- [Results](#results)
-- [Future Work](#future-work)
-- [Acknowledgments](#acknowledgments)
-
-## Abstract
+- [Demo Video](#demo-video)
+- [Abstract](#abstract)\$1## Abstract
 
 This project introduces a voice-activated navigation layer for e-commerce platforms, providing:
 
@@ -78,7 +72,3 @@ Detailed in Chapter 3, the project followed an agile approach with user storie
 - **Thesis Advisor:** Prof. Ly Tu Nga
 - **Web Speech API Documentation Team**
 - **Open Source Community**
-
-## Demo
-
-[Live Demo](https://hphuc112.github.io/voice-commerce-navigator/)
