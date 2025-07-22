@@ -2,14 +2,24 @@
 
 ## Demo
 
-Watch the video walkthrough and [Thesis Report (PDF)](https://drive.google.com/file/d/18Qc-Nd5Cza-4ciu5AfU5wTjmh1E1n-oj/view?usp=sharing) in this Google Drive folder: [Video Demo](https://drive.google.com/drive/folders/18LI0vDNOfUB4_fFyzvjmr18duwB5qCXl?usp=sharing)
+Watch the video walkthrough and [Thesis Report (PDF)](https://drive.google.com/file/d/18Qc-Nd5Cza-4ciu5AfU5wTjmh1E1n-oj/view?usp=sharing) in this [Google Drive folder](https://drive.google.com/drive/folders/18LI0vDNOfUB4_fFyzvjmr18duwB5qCXl?usp=sharing)
+
+[Live Demo](https://hphuc112.github.io/voice-commerce-navigator/)
 
 A thesis project implementing voice navigation in e-commerce websites using the Web Speech API, enhancing accessibility and efficiency through hands-free interaction.
 
 ## Table of Contents
 
-- [Demo Video](#demo-video)
-- [Abstract](#abstract)\$1## Abstract
+- [Abstract](#abstract)
+- [Features](#features)
+- [Thesis Components](#thesis-components)
+- [Technical Stack](#technical-stack)
+- [Methodology](#methodology)
+- [Results](#results)
+- [Future Work](#future-work)
+- [Acknowledgments](#acknowledgments)
+
+## Abstract
 
 This project introduces a voice-activated navigation layer for e-commerce platforms, providing:
 
@@ -40,7 +50,7 @@ This project introduces a voice-activated navigation layer for e-commerce platfo
 - **Literature Review**: Survey of voice UI in e-commerce and accessibility research (Chapter 2)
 - **Comparative Analysis**: Evaluation of existing voice-navigation solutions (Chapter 5)
 - **Prototype Development**: Implementation details of the voice navigator (Chapter 4)
-- **User Testing**: Usability study with **50 participants** to measure efficiency and satisfaction (Chapter 5)
+- **User Testing**: Usability study with 50 participants to measure efficiency and satisfaction (Chapter 5)
 - **Statistical Analysis**: Task completion times, SUS scores, and ANOVA results (Chapter 5)
 
 ## Technical Stack
@@ -56,7 +66,7 @@ Detailed in Chapter 3, the project followed an agile approach with user storie
 
 ## Results
 
-- **Navigation Efficiency:** Voice navigation achieved approximately **52% faster** task completion times compared to traditional UI methods.
+- **Navigation Efficiency:** Voice navigation achieved approximately 52% faster task completion times compared to traditional UI methods.
 - **User Satisfaction:** Measured via System Usability Scale (SUS); results indicate high usability across participant groups.
 
 ## Future Work
