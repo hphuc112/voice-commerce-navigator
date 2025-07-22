@@ -35,7 +35,7 @@ if (!window.SpeechRecognition) {
   }
 
   toggleVoiceBtn.addEventListener("click", () => {
-    // Wire up toggle :contentReference[oaicite:12]{index=12}
+    // Wire up toggle
     isListening ? stopRecognition() : startRecognition();
   });
 
@@ -44,12 +44,12 @@ if (!window.SpeechRecognition) {
   //   const transcript = Array.from(e.results)
   //     .map((r) => r[0].transcript)
   //     .join("")
-  //     .trim(); // Build full transcript :contentReference[oaicite:13]{index=13}
+  //     .trim(); // Build full transcript
 
   //   texts.innerHTML = ""; // Clear previous text
   //   const p = document.createElement("p");
   //   p.textContent = transcript;
-  //   texts.appendChild(p); // Display current transcript :contentReference[oaicite:14]{index=14}
+  //   texts.appendChild(p); // Display current transcript
 
   //   // Act only on final results and new commands
   //   if (e.results[e.results.length - 1].isFinal && transcript !== lastCommand) {
@@ -73,7 +73,7 @@ if (!window.SpeechRecognition) {
   //     clearTimeout(debounceTimer);
   //     debounceTimer = setTimeout(() => {
   //       lastCommand = "";
-  //     }, 1000); // Prevent immediate repeats :contentReference[oaicite:17]{index=17}
+  //     }, 1000); // Prevent immediate repeats
   //   }
   // });
   recognition.addEventListener("result", (e) => {
@@ -234,9 +234,6 @@ if (!window.SpeechRecognition) {
 
   // 6. Auto-restart recognition if still listening
   recognition.addEventListener("end", () => {
-    if (isListening) recognition.start(); // Resume on end :contentReference[oaicite:18]{index=18}
+    if (isListening) recognition.start(); // Resume on end
   });
-
-  // Optional: auto-start on page load
-  // startRecognition();
 }
