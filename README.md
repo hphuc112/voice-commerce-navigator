@@ -8,6 +8,24 @@ Watch the video walkthrough and [Thesis Report (PDF)](https://drive.google.com/f
 
 A thesis project implementing voice navigation in e-commerce websites using the Web Speech API, enhancing accessibility and efficiency through hands-free interaction.
 
+## Installation
+
+To run this project locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/hphuc112/voice-commerce-navigator.git
+
+# Navigate into the project directory
+cd voice-commerce-navigator
+
+# Install Live Server globally if you haven't already
+npm install -g live-server
+
+# Start the application on port 5500
+live-server --port=5500
+```
+
 ## Table of Contents
 
 - [Abstract](#abstract)
